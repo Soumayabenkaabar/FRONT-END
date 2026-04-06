@@ -3,9 +3,13 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+<<<<<<< HEAD
   app_links
   geolocator_windows
   url_launcher_windows
+=======
+  geolocator_windows
+>>>>>>> 48883dc6a3500a6f5e3558e6d8b3407a7335321a
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
