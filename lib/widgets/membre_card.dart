@@ -6,9 +6,18 @@ import '../models/membre.dart';
 // ─── Card membre DISPONIBLE ───────────────────────────────────────────────────
 class MembreDisponibleCard extends StatelessWidget {
   final Membre membre;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+final VoidCallback? onView;
+final VoidCallback? onAssign;
 
-  const MembreDisponibleCard({super.key, required this.membre});
-
+  const MembreDisponibleCard({
+    required this.membre,
+    this.onEdit,
+    this.onDelete,
+    this.onView,
+this.onAssign,
+  });
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,14 +61,18 @@ class MembreDisponibleCard extends StatelessWidget {
                           Text(
                             membre.role,
                             style: const TextStyle(
-                                color: kTextSub, fontSize: 13),
+                              color: kTextSub,
+                              fontSize: 13,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: kAccent,
                         borderRadius: BorderRadius.circular(20),
@@ -82,21 +95,23 @@ class MembreDisponibleCard extends StatelessWidget {
                     style: const TextStyle(fontSize: 13),
                     children: [
                       const TextSpan(
-                          text: 'Spécialité: ',
-                          style: TextStyle(color: kTextSub)),
+                        text: 'Spécialité: ',
+                        style: TextStyle(color: kTextSub),
+                      ),
                       TextSpan(
-                          text: membre.specialite,
-                          style: const TextStyle(
-                              color: kTextMain,
-                              fontWeight: FontWeight.w500)),
+                        text: membre.specialite,
+                        style: const TextStyle(
+                          color: kTextMain,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 8),
                 _InfoRow(icon: LucideIcons.mail, text: membre.email),
                 const SizedBox(height: 6),
-                _InfoRow(
-                    icon: LucideIcons.phone, text: membre.telephone),
+                _InfoRow(icon: LucideIcons.phone, text: membre.telephone),
               ],
             ),
           ),
@@ -113,7 +128,7 @@ class MembreDisponibleCard extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                  onPressed: onAssign,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kAccent,
                       elevation: 0,
@@ -135,45 +150,19 @@ class MembreDisponibleCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 // Modifier / Supprimer
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(LucideIcons.pencil,
-                            size: 14, color: kTextMain),
-                        label: const Text('Modifier',
-                            style: TextStyle(
-                                color: kTextMain, fontSize: 13)),
-                        style: OutlinedButton.styleFrom(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 10),
-                          side: const BorderSide(
-                              color: Color(0xFFE0E0E0)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.edit, size: 18),
+                      onPressed: onEdit,
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(LucideIcons.trash2,
-                            size: 14, color: kRed),
-                        label: const Text('Supprimer',
-                            style:
-                                TextStyle(color: kRed, fontSize: 13)),
-                        style: OutlinedButton.styleFrom(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 10),
-                          side: const BorderSide(
-                              color: Color(0xFFE0E0E0)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        size: 18,
+                        color: Colors.red,
                       ),
+                      onPressed: onDelete,
                     ),
                   ],
                 ),
@@ -190,8 +179,16 @@ class MembreDisponibleCard extends StatelessWidget {
 class MembreActifRow extends StatelessWidget {
   final Membre membre;
 
-  const MembreActifRow({super.key, required this.membre});
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onView;
 
+  const MembreActifRow({
+    required this.membre,
+    this.onEdit,
+    this.onDelete,
+    this.onView,
+  });
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 800;
@@ -211,15 +208,34 @@ class MembreActifRow extends StatelessWidget {
         ],
       ),
       child: isMobile
-          ? _MobileActifLayout(membre: membre)
-          : _DesktopActifLayout(membre: membre),
+    ? _MobileActifLayout(
+        membre: membre,
+        onEdit: onEdit,
+        onDelete: onDelete,
+        onView: onView,
+      )
+    : _DesktopActifLayout(
+        membre: membre,
+        onEdit: onEdit,
+        onDelete: onDelete,
+        onView: onView,
+      ),
     );
   }
 }
 
 class _DesktopActifLayout extends StatelessWidget {
   final Membre membre;
-  const _DesktopActifLayout({required this.membre});
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onView;
+
+  const _DesktopActifLayout({
+    required this.membre,
+    this.onEdit,
+    this.onDelete,
+    this.onView,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -232,32 +248,37 @@ class _DesktopActifLayout extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(membre.nom,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                      color: kTextMain)),
+              Text(
+                membre.nom,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                  color: kTextMain,
+                ),
+              ),
               const SizedBox(height: 3),
-              Text(membre.role,
-                  style:
-                      const TextStyle(color: kTextSub, fontSize: 13)),
+              Text(
+                membre.role,
+                style: const TextStyle(color: kTextSub, fontSize: 13),
+              ),
               const SizedBox(height: 8),
               RichText(
                 text: TextSpan(
                   style: const TextStyle(fontSize: 12),
                   children: [
                     const TextSpan(
-                        text: 'Spécialité: ',
-                        style: TextStyle(color: kTextSub)),
+                      text: 'Spécialité: ',
+                      style: TextStyle(color: kTextSub),
+                    ),
                     TextSpan(
-                        text: membre.specialite,
-                        style: const TextStyle(color: kTextMain)),
+                      text: membre.specialite,
+                      style: const TextStyle(color: kTextMain),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 6),
-              _InfoRow(
-                  icon: LucideIcons.phone, text: membre.telephone),
+              _InfoRow(icon: LucideIcons.phone, text: membre.telephone),
             ],
           ),
         ),
@@ -280,59 +301,46 @@ class _DesktopActifLayout extends StatelessWidget {
                 style: const TextStyle(color: kTextSub, fontSize: 12),
               ),
               const SizedBox(height: 4),
-              ...membre.projetsAssignes.map((p) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: kAccent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
+              ...membre.projetsAssignes.map(
+                (p) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: kAccent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      p,
+                      style: const TextStyle(
+                        color: kTextMain,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
                       ),
-                      child: Text(p,
-                          style: const TextStyle(
-                              color: kTextMain,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500)),
-                    ),
-                  )),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(LucideIcons.pencil,
-                        size: 13, color: kTextMain),
-                    label: const Text('Modifier',
-                        style:
-                            TextStyle(color: kTextMain, fontSize: 12)),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      side:
-                          const BorderSide(color: Color(0xFFE0E0E0)),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  OutlinedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(LucideIcons.trash2,
-                        size: 13, color: kRed),
-                    label: const Text('Supprimer',
-                        style: TextStyle(color: kRed, fontSize: 12)),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      side:
-                          const BorderSide(color: Color(0xFFE0E0E0)),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                    ),
-                  ),
-                ],
+                ),
               ),
+              const SizedBox(height: 10),
+             Row(
+  children: [
+    IconButton(
+      icon: const Icon(Icons.visibility, size: 18),
+      onPressed: onView,
+    ),
+    IconButton(
+      icon: const Icon(Icons.edit, size: 18),
+      onPressed: onEdit,
+    ),
+    IconButton(
+      icon: const Icon(Icons.delete, size: 18, color: Colors.red),
+      onPressed: onDelete,
+    ),
+  ],
+)
             ],
           ),
         ),
@@ -343,21 +351,35 @@ class _DesktopActifLayout extends StatelessWidget {
 
 class _MobileActifLayout extends StatelessWidget {
   final Membre membre;
-  const _MobileActifLayout({required this.membre});
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onView;
+
+  const _MobileActifLayout({
+    required this.membre,
+    this.onEdit,
+    this.onDelete,
+    this.onView,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(membre.nom,
-            style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
-                color: kTextMain)),
+        Text(
+          membre.nom,
+          style: const TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 15,
+            color: kTextMain,
+          ),
+        ),
         const SizedBox(height: 3),
-        Text(membre.role,
-            style: const TextStyle(color: kTextSub, fontSize: 13)),
+        Text(
+          membre.role,
+          style: const TextStyle(color: kTextSub, fontSize: 13),
+        ),
         const SizedBox(height: 8),
         _InfoRow(icon: LucideIcons.mail, text: membre.email),
         const SizedBox(height: 4),
@@ -368,54 +390,65 @@ class _MobileActifLayout extends StatelessWidget {
           style: const TextStyle(color: kTextSub, fontSize: 12),
         ),
         const SizedBox(height: 4),
-        ...membre.projetsAssignes.map((p) => Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: kAccent.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(p,
-                    style: const TextStyle(
-                        color: kTextMain,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500)),
+        ...membre.projetsAssignes.map(
+          (p) => Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: kAccent.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
               ),
-            )),
+              child: Text(
+                p,
+                style: const TextStyle(
+                  color: kTextMain,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(LucideIcons.pencil,
-                    size: 13, color: kTextMain),
-                label: const Text('Modifier',
-                    style:
-                        TextStyle(color: kTextMain, fontSize: 12)),
+                onPressed: onEdit,
+                icon: const Icon(
+                  LucideIcons.pencil,
+                  size: 13,
+                  color: kTextMain,
+                ),
+                label: const Text(
+                  'Modifier',
+                  style: TextStyle(color: kTextMain, fontSize: 12),
+                ),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   side: const BorderSide(color: Color(0xFFE0E0E0)),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(LucideIcons.trash2,
-                    size: 13, color: kRed),
-                label: const Text('Supprimer',
-                    style: TextStyle(color: kRed, fontSize: 12)),
+                onPressed: onDelete,
+                icon: const Icon(LucideIcons.trash2, size: 13, color: kRed),
+                label: const Text(
+                  'Supprimer',
+                  style: TextStyle(color: kRed, fontSize: 12),
+                ),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   side: const BorderSide(color: Color(0xFFE0E0E0)),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ),
@@ -439,9 +472,11 @@ class _InfoRow extends StatelessWidget {
         Icon(icon, size: 13, color: kTextSub),
         const SizedBox(width: 6),
         Expanded(
-          child: Text(text,
-              style: const TextStyle(color: kTextSub, fontSize: 13),
-              overflow: TextOverflow.ellipsis),
+          child: Text(
+            text,
+            style: const TextStyle(color: kTextSub, fontSize: 13),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ],
     );

@@ -1,5 +1,5 @@
 class Membre {
-  final String id;
+final String? id;
   final String nom;
   final String role;
   final String specialite;
@@ -9,6 +9,7 @@ class Membre {
   final List<String> projetsAssignes;
 
   Membre({
+    
     required this.id,
     required this.nom,
     required this.role,

@@ -13,6 +13,7 @@ class EquipeScreen extends StatefulWidget {
 }
 
 class _EquipeScreenState extends State<EquipeScreen> {
+  
   final TextEditingController searchController = TextEditingController();
 
   List<Membre> membres = [];
@@ -219,7 +220,7 @@ class _EquipeScreenState extends State<EquipeScreen> {
                           onPressed: () async {
                             await MembreService.addMembre(
                               Membre(
-                                id: '',
+id: null,
                                 nom: nomCtrl.text,
                                 role: roleCtrl.text,
                                 specialite: specialiteCtrl.text,
@@ -439,9 +440,36 @@ class _EquipeScreenState extends State<EquipeScreen> {
                           for (int j = 0; j < rowItems.length; j++) ...[
                             if (j > 0) const SizedBox(width: 16),
                             Expanded(
-                              child: MembreDisponibleCard(
-                                  membre: rowItems[j]),
-                            ),
+                           child:  MembreDisponibleCard(
+  membre: rowItems[j],
+onAssign: () {
+  showAssignDialog(
+    context,
+    rowItems[j],
+    ["Projet A", "Projet B"], 
+        loadMembres, // ✅ AJOUT
+// temporaire
+  );
+},
+  onEdit: () {
+showEditDialog(context, rowItems[j],loadMembres);  },
+
+onDelete: () async {
+  if (rowItems[j].id == null) return;
+
+  await MembreService.deleteMembre(rowItems[j].id!);
+
+  // ✅ SNACKBAR ICI
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Membre supprimé"),
+      backgroundColor: Colors.red,
+    ),
+  );
+
+  loadMembres();
+},
+),)
                           ],
                           for (int k = rowItems.length; k < cols; k++) ...[
                             const SizedBox(width: 16),
@@ -478,8 +506,32 @@ class _EquipeScreenState extends State<EquipeScreen> {
               const SizedBox(height: 14),
               ...actifs.map((m) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: MembreActifRow(membre: m),
-                  )),
+child: MembreActifRow(
+  membre: m,
+
+  onView: () {
+    showViewDialog(context, m);
+  },
+
+  onEdit: () {
+    showEditDialog(context, m, loadMembres);
+  },
+
+  onDelete: () async {
+    if (m.id == null) return;
+
+    await MembreService.deleteMembre(m.id!);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Membre supprimé"),
+        backgroundColor: Colors.red,
+      ),
+    );
+
+    loadMembres();
+  },
+),                  )),
             ],
 
             if (filtered.isEmpty)
@@ -506,6 +558,260 @@ class _EquipeScreenState extends State<EquipeScreen> {
   }
 }
 
+void showViewDialog(BuildContext context, Membre membre) {
+  showDialog(
+    context: context,
+    builder: (_) => Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            const Text("Détails du membre",
+                style: TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.bold)),
+
+            const SizedBox(height: 16),
+
+            Text("Nom: ${membre.nom}"),
+            Text("Rôle: ${membre.role}"),
+            Text("Spécialité: ${membre.specialite}"),
+            Text("Email: ${membre.email}"),
+            Text("Téléphone: ${membre.telephone}"),
+
+            const SizedBox(height: 16),
+
+            const Text("Projets:",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+
+            ...membre.projetsAssignes
+                .map((p) => Text("- $p"))
+                .toList(),
+
+            const SizedBox(height: 20),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Fermer"),
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+void showEditDialog(
+  BuildContext context,
+  Membre membre,
+  VoidCallback onRefresh,
+) {
+  final nomCtrl = TextEditingController(text: membre.nom);
+  final roleCtrl = TextEditingController(text: membre.role);
+  final telCtrl = TextEditingController(text: membre.telephone);
+
+  showDialog(
+    context: context,
+    builder: (_) => Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        width: 420,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+
+            Row(
+              children: const [
+                Icon(Icons.edit, color: Colors.orange),
+                SizedBox(width: 10),
+                Text("Modifier membre",
+                    style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            TextField(
+              controller: nomCtrl,
+              decoration: const InputDecoration(labelText: "Nom"),
+            ),
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: roleCtrl,
+              decoration: const InputDecoration(labelText: "Rôle"),
+            ),
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: telCtrl,
+              decoration: const InputDecoration(labelText: "Téléphone"),
+            ),
+
+            const SizedBox(height: 20),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Annuler"),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    await MembreService.updateMembre(
+                      Membre(
+                        id: membre.id,
+                        nom: nomCtrl.text,
+                        role: roleCtrl.text,
+                        specialite: membre.specialite,
+                        email: membre.email,
+                        telephone: telCtrl.text,
+                        disponible: membre.disponible,
+                        projetsAssignes: membre.projetsAssignes,
+                      ),
+                    );
+
+                    Navigator.pop(context);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Membre modifié")),
+                    );
+
+                    onRefresh(); // ✅ FIX
+                  },
+                  child: const Text("Enregistrer"),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
+void showAssignDialog(
+  BuildContext context,
+  Membre membre,
+  List<String> projets,
+  VoidCallback onRefresh, // 🔥 IMPORTANT
+) {
+  String? selectedProject;
+
+  showDialog(
+    context: context,
+    builder: (_) => StatefulBuilder(
+      builder: (context, setState) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            width: 420,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                Row(
+                  children: [
+                    const Icon(Icons.link, color: Colors.orange),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        "Assigner ${membre.nom} à un projet",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                DropdownButtonFormField<String>(
+                  value: selectedProject,
+                  hint: const Text("Sélectionnez un projet"),
+                  items: projets
+                      .map((p) => DropdownMenuItem(
+                            value: p,
+                            child: Text(p),
+                          ))
+                      .toList(),
+                  onChanged: (v) {
+                    setState(() {
+                      selectedProject = v;
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "${membre.nom} sera assigné au projet sélectionné.\n"
+                    "Son statut sera changé à 'En activité'.",
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Annuler"),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: selectedProject == null
+                          ? null
+                          : () async {
+                              await MembreService.assignMembre(
+                                membre: membre,
+                                projet: selectedProject!,
+                              );
+
+                              Navigator.pop(context);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("Assigné avec succès")),
+                              );
+
+                              onRefresh(); // ✅ FIX
+                            },
+                      child: const Text("Assigner"),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
 // ── Stat Card ─────────────────────────────────────────────────────────────────
 class _StatCard extends StatelessWidget {
   final String title;
@@ -562,6 +868,7 @@ class _StatCard extends StatelessWidget {
           ),
         ],
       ),
+      
     );
   }
 }
