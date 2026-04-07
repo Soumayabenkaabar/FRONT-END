@@ -44,15 +44,18 @@ class MembreService {
       'membre_id': membreId,
       'project_id': projectId,
     });
-  }
-static Future<void> assignMembre({
+  }static Future<void> assignMembre({
   required Membre membre,
   required String projet,
 }) async {
   if (membre.id == null) return;
 
+  // ✅ COPIE ICI 🔥
   final updatedProjects = List<String>.from(membre.projetsAssignes);
-  updatedProjects.add(projet);
+
+  if (!updatedProjects.contains(projet)) {
+    updatedProjects.add(projet);
+  }
 
   await supabase
       .from('membres')
@@ -61,6 +64,8 @@ static Future<void> assignMembre({
         'disponible': false,
       })
       .eq('id', membre.id!);
+
+  print("ASSIGNED: $projet to ${membre.nom}");
 }
   // ── GET MEMBRES PAR PROJET 🔥 ───────
   static Future<List<Membre>> getMembresByProject(String projectId) async {
