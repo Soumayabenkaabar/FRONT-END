@@ -52,7 +52,7 @@ class _ProjetDetailScreenState extends State<ProjetDetailScreen>
   }
 
   Color get _statusColor {
-    switch (widget.project.status) {
+    switch (widget.project.statut) {
       case 'En cours':      return kAccent;
       case 'Planification': return const Color(0xFFADB5BD);
       default:              return const Color(0xFF28A745);
@@ -131,7 +131,7 @@ class _ProjetDetailScreenState extends State<ProjetDetailScreen>
                               color: kTextSub,
                               fontSize: 13,
                               fontWeight: FontWeight.w500)),
-                      Text('${(p.progress * 100).toInt()}%',
+                      Text('${(p.avancement * 100).toInt()}%',
                           style: const TextStyle(
                               fontWeight: FontWeight.w700,
                               color: kTextMain,
@@ -142,7 +142,7 @@ class _ProjetDetailScreenState extends State<ProjetDetailScreen>
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
                     child: LinearProgressIndicator(
-                      value: p.progress,
+                      value: p.avancement.toDouble(),
                       minHeight: 8,
                       backgroundColor: const Color(0xFFE5E7EB),
                       valueColor:
@@ -209,7 +209,7 @@ class _ProjetDetailScreenState extends State<ProjetDetailScreen>
               child: Row(
                 children: [
                   Flexible(
-                    child: Text(p.title,
+                    child: Text(p.titre,
                         style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w800,
@@ -217,7 +217,7 @@ class _ProjetDetailScreenState extends State<ProjetDetailScreen>
                   ),
                   const SizedBox(width: 12),
                   _StatusBadge(
-                      label: p.status, color: _statusColor),
+                      label: p.statut, color: _statusColor),
                 ],
               ),
             ),
@@ -1060,7 +1060,7 @@ class _AccessToggleState extends State<_AccessToggle> {
           Switch(
               value: _value,
               onChanged: (v) => setState(() => _value = v),
-              activeColor: kAccent),
+              activeThumbColor: kAccent),
           const Text('Accès Portail Client',
               style: TextStyle(color: kTextSub, fontSize: 12)),
         ],

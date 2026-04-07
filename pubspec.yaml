@@ -24,10 +24,7 @@ dependencies:
   flutter_map: ^6.1.0   # carte OpenStreetMap
   latlong2: ^0.9.0      # coordonnées GPS
   geolocator: ^11.0.0   # position utilisateur
-<<<<<<< HEAD
   supabase_flutter: ^2.0.0
-=======
->>>>>>> 48883dc6a3500a6f5e3558e6d8b3407a7335321a
 
 dev_dependencies:
   flutter_test:

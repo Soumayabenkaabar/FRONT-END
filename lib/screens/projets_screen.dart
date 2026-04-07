@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import 'package:archi_manager/screens/projet_detail_screen.dart';
-=======
->>>>>>> 48883dc6a3500a6f5e3558e6d8b3407a7335321a
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../constants/colors.dart';
@@ -141,7 +138,6 @@ class _ProjetsScreenState extends State<ProjetsScreen> {
                 children: projects
                     .map((p) => Padding(
                           padding: const EdgeInsets.only(bottom: 16),
-<<<<<<< HEAD
                          child: GestureDetector(
   onTap: () {
     Navigator.push(
@@ -156,9 +152,6 @@ class _ProjetsScreenState extends State<ProjetsScreen> {
   },
   child: ProjectFullCard(project: p),
 ),
-=======
-                          child: ProjectFullCard(project: p),
->>>>>>> 48883dc6a3500a6f5e3558e6d8b3407a7335321a
                         ))
                     .toList(),
               );
@@ -225,7 +218,6 @@ class _DesktopGrid extends StatelessWidget {
             children: [
               for (int j = 0; j < rowItems.length; j++) ...[
                 if (j > 0) const SizedBox(width: 20),
-<<<<<<< HEAD
 Expanded(
   child: GestureDetector(
     onTap: () {
@@ -242,10 +234,6 @@ Expanded(
     child: ProjectFullCard(project: rowItems[j]),
   ),
 ),              ],
-=======
-                Expanded(child: ProjectFullCard(project: rowItems[j])),
-              ],
->>>>>>> 48883dc6a3500a6f5e3558e6d8b3407a7335321a
               for (int k = rowItems.length; k < columns; k++) ...[
                 const SizedBox(width: 20),
                 const Expanded(child: SizedBox()),

@@ -987,7 +987,7 @@ class _GanttRow extends StatelessWidget {
 
   // Map project to start/end month index (0 = Jan 2026)
   (int, int) get _range {
-    switch (project.title) {
+    switch (project.titre) {
       case 'Villa Moderne Casablanca':   return (0, 11);  // jan-déc 2026
       case 'Immeuble Résidentiel Rabat': return (1, 17);  // fév 2026-juin 2027
       default:                           return (5, 23);  // juin 2026-déc 2027
@@ -1000,8 +1000,8 @@ class _GanttRow extends StatelessWidget {
     final totalW  = totalMonths * cellW;
     final barLeft = start * cellW;
     final barW    = (end - start + 1) * cellW;
-    final progress   = project.progress;
-    final isPlanning = project.status == 'Planification';
+    final progress   = project.avancement;
+    final isPlanning = project.statut == 'Planification';
     final barColor   = isPlanning ? const Color(0xFF6B7280) : kAccent;
 
     return Container(
@@ -1021,7 +1021,7 @@ class _GanttRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    project.title,
+                    project.titre,
                     style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
@@ -1030,7 +1030,7 @@ class _GanttRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${project.taches} tâches · ${(project.progress * 100).toInt()}%',
+                    '${project.taches} tâches · ${(project.avancement * 100).toInt()}%',
                     style: const TextStyle(color: kTextSub, fontSize: 11),
                   ),
                 ],

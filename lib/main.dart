@@ -16,6 +16,7 @@
 //   < 800px  → rail icônes (64px) rétractable + contenu
 // ──────────────────────────────────────────────────────────────────────────────
 // ─── ENTRY POINT ──────────────────────────────────────────────────────────────
+import 'package:archi_manager/core/supabase_config.dart';
 import 'package:archi_manager/screens/parametres_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -31,9 +32,13 @@ import 'screens/notifications_screen.dart';
 import 'screens/projets_screen.dart';
 import 'widgets/sidebar_widget.dart';
 
-void main() {
-  runApp(const ArchiManagerApp());
-}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SupabaseConfig.init();
+
+runApp(const ArchiManagerApp());}
 
 class ArchiManagerApp extends StatelessWidget {
   const ArchiManagerApp({super.key});

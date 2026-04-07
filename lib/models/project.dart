@@ -1,81 +1,143 @@
 class Project {
-  final String title;
-  final String client;
-  final double progress;
-  final String status;           // 'En cours' | 'Planification' | 'Terminé'
+  final String id;
+  final String clientId;
+  final String titre;
+  final String description;
+  final String statut;
+  final int avancement; // 0-100
+  final String? dateDebut;
+  final String? dateFin;
   final double budgetTotal;
   final double budgetDepense;
+  final String client;
+  final String localisation;
   final String chef;
   final int taches;
-  final int membres;
-  final int docs;
-  final String localisation;
-  final String dateDebut;
-  final String dateFin;
 
-  const Project({
-    required this.title,
-    required this.client,
-    required this.progress,
-    this.status = 'En cours',
-    required this.budgetTotal,
-    required this.budgetDepense,
-    required this.chef,
-    required this.taches,
-    required this.membres,
-    required this.docs,
-    required this.localisation,
-    required this.dateDebut,
-    required this.dateFin,
+  // ✅ AJOUT
+  final List<String> membres;
+  final List<String> docs;
+
+  Project({
+    required this.id,
+    required this.clientId,
+    required this.titre,
+    required this.description,
+    required this.statut,
+    required this.avancement,
+    this.dateDebut,
+    this.dateFin,
+    this.budgetTotal = 0,
+    this.budgetDepense = 0,
+    this.client = '',
+    this.localisation = '',
+    this.chef = '',
+    this.taches = 0,
+
+    // ✅ DEFAULT VALUES (important)
+    this.membres = const [],
+    this.docs = const [],
   });
 
-  double get budgetProgress => budgetDepense / budgetTotal;
-}
+  // ── Aliases ─────────────────────────────────────────
+  String get title => titre;
+  String get status => statut;
 
+  /// 0.0 → 1.0
+  double get progress => avancement / 100.0;
+
+  /// budget ratio
+  double get budgetProgress =>
+      budgetTotal > 0 ? (budgetDepense / budgetTotal).clamp(0.0, 1.0) : 0.0;
+
+  // ── FROM JSON (Supabase safe) ───────────────────────
+  factory Project.fromJson(Map<String, dynamic> j) {
+    return Project(
+      id: j['id'] ?? '',
+      clientId: j['client_id'] ?? '',
+      titre: j['titre'] ?? '',
+      description: j['description'] ?? '',
+      statut: j['statut'] ?? 'en_cours',
+      avancement: (j['avancement'] ?? 0) as int,
+      dateDebut: j['date_debut'],
+      dateFin: j['date_fin'],
+      budgetTotal: (j['budget_total'] as num?)?.toDouble() ?? 0,
+      budgetDepense: (j['budget_depense'] as num?)?.toDouble() ?? 0,
+      client: j['client'] ?? '',
+      localisation: j['localisation'] ?? '',
+      chef: j['chef'] ?? '',
+      taches: j['taches'] ?? 0,
+
+      // ✅ SAFE LIST PARSING
+      membres: j['membres'] != null
+          ? List<String>.from(j['membres'])
+          : [],
+      docs: j['docs'] != null
+          ? List<String>.from(j['docs'])
+          : [],
+    );
+  }
+
+  // ── TO JSON ─────────────────────────────────────────
+  Map<String, dynamic> toJson() {
+    return {
+      'client_id': clientId,
+      'titre': titre,
+      'description': description,
+      'statut': statut,
+      'avancement': avancement,
+      'date_debut': dateDebut,
+      'date_fin': dateFin,
+      'budget_total': budgetTotal,
+      'budget_depense': budgetDepense,
+      'client': client,
+      'localisation': localisation,
+      'chef': chef,
+      'taches': taches,
+
+      // ✅ AJOUT
+      'membres': membres,
+      'docs': docs,
+    };
+  }
+}
 final List<Project> sampleProjects = [
-  const Project(
-    title: 'Villa Moderne Casablanca',
-    client: 'M. Alami',
-    progress: 0.45,
-    status: 'En cours',
-    budgetTotal: 2500000,
-    budgetDepense: 575000,
-    chef: 'Ahmed Bennani',
-    taches: 6,
-    membres: 4,
-    docs: 2,
-    localisation: 'Anfa, Casablanca',
-    dateDebut: 'janv. 2026',
-    dateFin: 'déc. 2026',
-  ),
-  const Project(
-    title: 'Immeuble Résidentiel Rabat',
-    client: 'Promoteur Horizon',
-    progress: 0.25,
-    status: 'En cours',
+  Project(
+    id: '1',
+    clientId: 'c1',
+    titre: 'Villa Carthage',
+    description: 'Construction villa R+1 avec piscine',
+    statut: 'En cours',
+    avancement: 65,
+    dateDebut: 'Jan 2024',
+    dateFin: 'Déc 2024',
     budgetTotal: 8500000,
     budgetDepense: 1070000,
-    chef: 'Sanaa Idrissi',
-    taches: 2,
-    membres: 2,
-    docs: 0,
-    localisation: 'Agdal, Rabat',
-    dateDebut: 'févr. 2026',
-    dateFin: 'juin 2027',
+    client: 'Groupe OCP',
+    localisation: 'Carthage, Tunis',
+    chef: 'Ahmed Ben Ali',
+    taches: 12,
+
+    // ✅ NEW
+    membres: ['Ahmed', 'Sonia', 'Karim'],
+    docs: ['plan.pdf', 'devis.xlsx'],
   ),
-  const Project(
-    title: 'Centre Commercial Tanger',
-    client: 'Société Delta Invest',
-    progress: 0.05,
-    status: 'Planification',
-    budgetTotal: 15000000,
-    budgetDepense: 250000,
-    chef: 'Karim Tazi',
-    taches: 1,
-    membres: 1,
-    docs: 0,
-    localisation: 'Tanger Med, Tanger',
-    dateDebut: 'juin 2026',
-    dateFin: 'déc. 2027',
+  Project(
+    id: '2',
+    clientId: 'c2',
+    titre: 'Résidence Les Pins',
+    description: 'Immeuble R+4, 16 appartements',
+    statut: 'Planification',
+    avancement: 20,
+    dateDebut: 'Mar 2024',
+    dateFin: 'Nov 2025',
+    budgetTotal: 6500000,
+    budgetDepense: 825000,
+    client: 'Société Immobilière TN',
+    localisation: 'La Marsa, Tunis',
+    chef: 'Sonia Mrad',
+    taches: 8,
+    membres: ['Sonia', 'Ali'],
+    docs: ['contrat.pdf'],
   ),
 ];

@@ -5,7 +5,6 @@ import '../models/project.dart';
 import '../widgets/kpi_card.dart';
 import '../widgets/alert_card.dart';
 import '../widgets/project_card.dart';
-
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 

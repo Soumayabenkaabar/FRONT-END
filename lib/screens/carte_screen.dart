@@ -314,7 +314,7 @@ class _CarteScreenState extends State<CarteScreen> {
                                 final i = e.key;
                                 final c = e.value;
                                 final color =
-                                    _statusColor(c.project.status);
+                                    _statusColor(c.project.statut);
                                 final isSelected = _selectedIndex == i;
 
                                 return Marker(
@@ -480,7 +480,7 @@ class _MarkerPopup extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  chantier.project.title,
+                  chantier.project.titre,
                   style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
@@ -509,7 +509,7 @@ class _MarkerPopup extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
-              chantier.project.status,
+              chantier.project.statut,
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: 9,
@@ -531,7 +531,7 @@ class _ProjetCarteCard extends StatelessWidget {
       {required this.chantier, required this.onTap});
 
   Color get _statusColor {
-    switch (chantier.project.status) {
+    switch (chantier.project.statut) {
       case 'En cours':      return kAccent;
       case 'Planification': return const Color(0xFFADB5BD);
       default:              return const Color(0xFF374151);
@@ -560,7 +560,7 @@ class _ProjetCarteCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(p.title,
+                child: Text(p.titre,
                     style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 14,
@@ -574,7 +574,7 @@ class _ProjetCarteCard extends StatelessWidget {
                   color: _statusColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(p.status,
+                child: Text(p.statut,
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 11,
