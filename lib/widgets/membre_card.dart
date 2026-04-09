@@ -153,16 +153,14 @@ this.onAssign,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.edit, size: 18),
+                      icon: const Icon(LucideIcons.pencil, size: 18, color: kTextSub),
                       onPressed: onEdit,
+                      tooltip: 'Modifier',
                     ),
                     IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        size: 18,
-                        color: Colors.red,
-                      ),
+                      icon: const Icon(LucideIcons.trash2, size: 18, color: kRed),
                       onPressed: onDelete,
+                      tooltip: 'Supprimer',
                     ),
                   ],
                 ),
@@ -328,16 +326,19 @@ class _DesktopActifLayout extends StatelessWidget {
              Row(
   children: [
     IconButton(
-      icon: const Icon(Icons.visibility, size: 18),
+      icon: const Icon(LucideIcons.eye, size: 18, color: kTextSub),
       onPressed: onView,
+      tooltip: 'Consulter',
     ),
     IconButton(
-      icon: const Icon(Icons.edit, size: 18),
+      icon: const Icon(LucideIcons.pencil, size: 18, color: kTextSub),
       onPressed: onEdit,
+      tooltip: 'Modifier',
     ),
     IconButton(
-      icon: const Icon(Icons.delete, size: 18, color: Colors.red),
+      icon: const Icon(LucideIcons.trash2, size: 18, color: kRed),
       onPressed: onDelete,
+      tooltip: 'Supprimer',
     ),
   ],
 )

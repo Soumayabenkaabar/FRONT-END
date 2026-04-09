@@ -1,46 +1,48 @@
+/// Modèle Client — table `clients`
+///
+/// Colonnes BDD :
+///   id, user_id, nom, email, telephone, entreprise,
+///   nb_projets, date_depuis, acces_portail, created_at
 class Client {
-  final String? id;
-
-  final String nom;
-  final String email;
-  final String telephone;
-  final String entreprise;
-  final int nbProjets;
-  final String dateDepuis;
-  final bool accesPortail;
+  final String  id;           // non-nullable : toujours présent depuis Supabase
+  final String? userId;
+  final String  nom;
+  final String  email;
+  final String  telephone;
+  final String  entreprise;
+  final int     nbProjets;
+  final String  dateDepuis;
+  final bool    accesPortail;
 
   Client({
-    this.id,
+    required this.id,
+    this.userId,
     required this.nom,
-    required this.email,
-    required this.telephone,
-    required this.entreprise,
-    required this.nbProjets,
-    required this.dateDepuis,
-    required this.accesPortail,
+    this.email        = '',
+    this.telephone    = '',
+    this.entreprise   = '',
+    this.nbProjets    = 0,
+    this.dateDepuis   = '',
+    this.accesPortail = true,
   });
 
-  factory Client.fromJson(Map<String, dynamic> json) {
-    return Client(
-      id: json['id'],
-      nom: json['nom'] ?? '',
-      email: json['email'] ?? '',
-      telephone: json['telephone'] ?? '',
-      entreprise: json['entreprise'] ?? '',
-      nbProjets: json['nb_projets'] ?? 0,
-      dateDepuis: json['date_depuis'] ?? '',
-      accesPortail: json['acces_portail'] ?? true,
-    );
-  }
+  factory Client.fromJson(Map<String, dynamic> json) => Client(
+    id:           json['id']?.toString()    ?? '',
+    userId:       json['user_id']?.toString(),
+    nom:          json['nom']               ?? '',
+    email:        json['email']             ?? '',
+    telephone:    json['telephone']         ?? '',
+    entreprise:   json['entreprise']        ?? '',
+    nbProjets:    (json['nb_projets'] as num?)?.toInt() ?? 0,
+    dateDepuis:   json['date_depuis']?.toString() ?? '',
+    accesPortail: json['acces_portail']     ?? true,
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      if (id != null) 'id': id,
-      'nom': nom,
-      'email': email,
-      'telephone': telephone,
-      'entreprise': entreprise,
-      'acces_portail': accesPortail,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'nom':          nom,
+    'email':        email,
+    'telephone':    telephone,
+    'entreprise':   entreprise,
+    'acces_portail': accesPortail,
+  };
 }

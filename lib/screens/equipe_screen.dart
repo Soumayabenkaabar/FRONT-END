@@ -61,7 +61,7 @@ class _EquipeScreenState extends State<EquipeScreen> {
               _showSnack(context, 'Choisissez un projet', kRed); return;
             }
             await MembreService.addMembre(Membre(
-              id: null, nom: nomCtrl.text, role: roleCtrl.text,
+              id: '', nom: nomCtrl.text, role: roleCtrl.text,
               specialite: specialiteCtrl.text, email: emailCtrl.text,
               telephone: telCtrl.text, disponible: disponible,
               projetsAssignes: disponible ? [] : [

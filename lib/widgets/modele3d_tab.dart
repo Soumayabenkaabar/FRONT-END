@@ -1,29 +1,43 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
-import '../models/task.dart';
+import '../models/tache.dart';
+import '../Service/tache_service.dart';
 
-class Modele3DTab extends StatelessWidget {
-  final int projectIndex;
-  const Modele3DTab({super.key, required this.projectIndex});
+class Modele3DTab extends StatefulWidget {
+  final String projectId;
+  const Modele3DTab({super.key, required this.projectId});
 
-  List<_Layer3D> get _layers {
-    if (projectIndex >= projectPhases.length) return [];
-    final tasks = projectPhases[projectIndex]
-        .expand((p) => p.taches)
-        .toList()
-        .reversed
-        .toList(); // Du haut vers le bas = tâches futures en haut
-    return tasks
-        .map((t) => _Layer3D(
-              label: t.titre,
-              progress: t.progress,
-              status: t.status,
-            ))
-        .toList();
+  @override
+  State<Modele3DTab> createState() => _Modele3DTabState();
+}
+
+class _Modele3DTabState extends State<Modele3DTab> {
+  List<Tache> taches = [];
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
   }
+
+  Future<void> _load() async {
+    try {
+      final data = await TacheService.getTaches(widget.projectId);
+      setState(() { taches = data; loading = false; });
+    } catch (e) {
+      setState(() => loading = false);
+    }
+  }
+
+  List<_Layer3D> get _layers => taches.reversed
+      .map((t) => _Layer3D(label: t.titre, statut: t.statut))
+      .toList();
 
   @override
   Widget build(BuildContext context) {
+    if (loading) return const Center(child: CircularProgressIndicator(color: kAccent));
+
     final isMobile = MediaQuery.of(context).size.width < 800;
     final pad = isMobile ? 16.0 : 28.0;
     final layers = _layers;
@@ -114,34 +128,34 @@ class Modele3DTab extends StatelessWidget {
 
 class _Layer3D {
   final String label;
-  final double progress;
-  final TaskStatus status;
-  const _Layer3D(
-      {required this.label, required this.progress, required this.status});
+  final String statut;   // 'en_attente' | 'en_cours' | 'termine'
+  const _Layer3D({required this.label, required this.statut});
 
   Color get color {
-    switch (status) {
-      case TaskStatus.termine:  return const Color(0xFF374151);
-      case TaskStatus.enCours:  return kAccent;
-      case TaskStatus.planifie: return const Color(0xFFD1D5DB);
+    switch (statut) {
+      case 'termine':   return const Color(0xFF374151);
+      case 'en_cours':  return kAccent;
+      default:          return const Color(0xFFD1D5DB);
     }
   }
 
   Color get sideColor {
-    switch (status) {
-      case TaskStatus.termine:  return const Color(0xFF1F2937);
-      case TaskStatus.enCours:  return const Color(0xFFD97706);
-      case TaskStatus.planifie: return const Color(0xFF9CA3AF);
+    switch (statut) {
+      case 'termine':   return const Color(0xFF1F2937);
+      case 'en_cours':  return const Color(0xFFD97706);
+      default:          return const Color(0xFF9CA3AF);
     }
   }
 
   Color get topColor {
-    switch (status) {
-      case TaskStatus.termine:  return const Color(0xFF4B5563);
-      case TaskStatus.enCours:  return const Color(0xFFFBBF24);
-      case TaskStatus.planifie: return const Color(0xFFE5E7EB);
+    switch (statut) {
+      case 'termine':   return const Color(0xFF4B5563);
+      case 'en_cours':  return const Color(0xFFFBBF24);
+      default:          return const Color(0xFFE5E7EB);
     }
   }
+
+  bool get isPlanifie => statut == 'en_attente';
 }
 
 class _Building3DPainter extends CustomPainter {
@@ -208,7 +222,7 @@ class _Building3DPainter extends CustomPainter {
         text: TextSpan(
           text: shortLabel,
           style: TextStyle(
-            color: layer.status == TaskStatus.planifie
+            color: layer.isPlanifie
                 ? const Color(0xFF374151)
                 : Colors.white,
             fontSize: 11,

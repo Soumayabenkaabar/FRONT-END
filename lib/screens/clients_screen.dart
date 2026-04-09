@@ -347,8 +347,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
                                         try {
                                          final client = Client(
-  id: clientToEdit?.id,
-
+  id: clientToEdit?.id ?? '',
   nom: nomController.text.isNotEmpty
       ? nomController.text
       : clientToEdit?.nom ?? '',

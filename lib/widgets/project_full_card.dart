@@ -8,7 +8,8 @@ class ProjectFullCard extends StatelessWidget {
 
   const ProjectFullCard({super.key, required this.project});
 
-  String _formatMad(double amount) {
+  String _formatDt(double amount) {
+    if (amount == 0) return '0 DT';
     final str = amount.toInt().toString();
     final buffer = StringBuffer();
     int count = 0;
@@ -17,7 +18,7 @@ class ProjectFullCard extends StatelessWidget {
       buffer.write(str[i]);
       count++;
     }
-    return '${buffer.toString().split('').reversed.join()} MAD';
+    return '${buffer.toString().split('').reversed.join()} DT';
   }
 
   Color get _statusColor {
@@ -189,11 +190,11 @@ class ProjectFullCard extends StatelessWidget {
               children: [
                 _BudgetRow(
                     label: 'Budget',
-                    value: _formatMad(project.budgetTotal)),
+                    value: _formatDt(project.budgetTotal)),
                 const SizedBox(height: 4),
                 _BudgetRow(
                     label: 'Dépensé',
-                    value: _formatMad(project.budgetDepense),
+                    value: _formatDt(project.budgetDepense),
                     bold: true),
               ],
             ),
@@ -209,20 +210,17 @@ class ProjectFullCard extends StatelessWidget {
               children: [
                 Text(
                   '${project.taches} tâches',
-                  style:
-                      const TextStyle(color: kTextSub, fontSize: 12),
+                  style: const TextStyle(color: kTextSub, fontSize: 12),
                 ),
                 const _Dot(),
                 Text(
-                  '${project.membres} membres',
-                  style:
-                      const TextStyle(color: kTextSub, fontSize: 12),
+                  '${project.membres.length} membres',
+                  style: const TextStyle(color: kTextSub, fontSize: 12),
                 ),
                 const _Dot(),
                 Text(
-                  '${project.docs} docs',
-                  style:
-                      const TextStyle(color: kTextSub, fontSize: 12),
+                  '${project.docs.length} docs',
+                  style: const TextStyle(color: kTextSub, fontSize: 12),
                 ),
               ],
             ),
