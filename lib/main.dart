@@ -1,21 +1,3 @@
-// ─── ENTRY POINT ──────────────────────────────────────────────────────────────
-// Ce fichier est le point d'entrée principal.
-// La logique est divisée en :
-//   constants/colors.dart        → couleurs & thème
-//   models/nav_item.dart         → modèle NavItem + liste
-//   models/project.dart          → modèle Project + données
-//   models/alert_item.dart       → modèle AlertItem + données
-//   widgets/sidebar_widget.dart  → sidebar desktop (avec labels)
-//   widgets/kpi_card.dart        → carte KPI
-//   widgets/alert_card.dart      → carte alerte
-//   widgets/project_card.dart    → carte projet
-//   screens/dashboard_screen.dart → écran Dashboard
-//
-// Layouts :
-//   ≥ 800px  → sidebar complète (240px) + contenu
-//   < 800px  → rail icônes (64px) rétractable + contenu
-// ──────────────────────────────────────────────────────────────────────────────
-// ─── ENTRY POINT ──────────────────────────────────────────────────────────────
 import 'package:archi_manager/core/supabase_config.dart';
 import 'package:archi_manager/screens/parametres_screen.dart';
 import 'package:flutter/material.dart';
@@ -30,15 +12,17 @@ import 'screens/dashboard_screen.dart';
 import 'screens/equipe_screen.dart';
 import 'screens/notifications_screen.dart';
 import 'screens/projets_screen.dart';
+import 'screens/splash_screen.dart'; // ← nouveau
+import 'screens/login_screen.dart'; // ← nouveau
+import 'screens/register_screen.dart'; // ← nouveau
+import 'service/auth_service.dart'; // ← nouveau
 import 'widgets/sidebar_widget.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await SupabaseConfig.init();
-
-runApp(const ArchiManagerApp());}
+  runApp(const ArchiManagerApp());
+}
 
 class ArchiManagerApp extends StatelessWidget {
   const ArchiManagerApp({super.key});
@@ -54,7 +38,13 @@ class ArchiManagerApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: kAccent),
         useMaterial3: true,
       ),
-      home: const _AppShell(),
+      // SplashScreen vérifie la session → redirige vers login ou app
+      home: const SplashScreen(),
+      routes: {
+        '/login': (_) => const LoginScreen(),
+        '/register': (_) => const RegisterScreen(),
+        '/home': (_) => const _AppShell(),
+      },
     );
   }
 }
@@ -70,9 +60,6 @@ class _AppShell extends StatefulWidget {
 class _AppShellState extends State<_AppShell> {
   int _selectedIndex = 0;
 
-  static const _mobileNavIndices = [0, 1, 6, 7];
-
-  // Badge dynamique depuis sampleNotifications
   int get _notifCount => sampleNotifications.where((n) => !n.lue).length;
 
   Widget _buildPage(int index) {
@@ -98,12 +85,19 @@ class _AppShellState extends State<_AppShell> {
     }
   }
 
+  Future<void> _logout() async {
+    await AuthService.logout();
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width >= 800;
     final notifCount = _notifCount;
+    final architecte = AuthService.currentUser;
 
-    // ── Desktop / Web ─────────────────────────────────────────────────────
+    // ── Desktop / Web ──────────────────────────────────────────────────────
     if (isWide) {
       return Scaffold(
         body: Row(
@@ -112,6 +106,8 @@ class _AppShellState extends State<_AppShell> {
               selectedIndex: _selectedIndex,
               onSelect: (i) => setState(() => _selectedIndex = i),
               notifCount: notifCount,
+              architecteNom: architecte?.fullName ?? 'Architecte',
+              onLogout: _logout,
             ),
             Expanded(child: _buildPage(_selectedIndex)),
           ],
@@ -119,7 +115,7 @@ class _AppShellState extends State<_AppShell> {
       );
     }
 
-    // ── Mobile ────────────────────────────────────────────────────────────
+    // ── Mobile ─────────────────────────────────────────────────────────────
     return Scaffold(
       backgroundColor: kBg,
       appBar: AppBar(
@@ -185,13 +181,86 @@ class _AppShellState extends State<_AppShell> {
       ),
       drawer: Drawer(
         backgroundColor: const Color(0xFF1F2937),
-        child: SidebarContent(
-          selectedIndex: _selectedIndex,
-          onSelect: (i) {
-            setState(() => _selectedIndex = i);
-            Navigator.of(context).pop();
-          },
-          notifCount: notifCount,
+        child: Column(
+          children: [
+            Expanded(
+              child: SidebarContent(
+  selectedIndex: _selectedIndex,
+  onSelect: (i) {
+    setState(() => _selectedIndex = i);
+    Navigator.of(context).pop();
+  },
+  notifCount: notifCount,
+  architecteNom: architecte?.fullName ?? 'Architecte',
+  onLogout: _logout,
+),
+            ),
+            // ── Pied du drawer : nom + déconnexion ──────────────────────
+            const Divider(color: Colors.white12, height: 1),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: kAccent.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        architecte?.initials ?? 'A',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          architecte?.fullName ?? 'Architecte',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (architecte?.cabinet != null)
+                          Text(
+                            architecte!.cabinet!,
+                            style: const TextStyle(
+                              color: Colors.white38,
+                              fontSize: 11,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      LucideIcons.logOut,
+                      color: Colors.white38,
+                      size: 18,
+                    ),
+                    tooltip: 'Se déconnecter',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _logout();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
       body: _buildPage(_selectedIndex),
@@ -205,28 +274,26 @@ class _PlaceholderScreen extends StatelessWidget {
   const _PlaceholderScreen({required this.label});
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(LucideIcons.construction, size: 48, color: kTextSub),
-          const SizedBox(height: 12),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: kTextMain,
-            ),
+  Widget build(BuildContext context) => Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(LucideIcons.construction, size: 48, color: kTextSub),
+        const SizedBox(height: 12),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: kTextMain,
           ),
-          const SizedBox(height: 6),
-          const Text(
-            'Page en cours de développement',
-            style: TextStyle(color: kTextSub, fontSize: 13),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Page en cours de développement',
+          style: TextStyle(color: kTextSub, fontSize: 13),
+        ),
+      ],
+    ),
+  );
 }

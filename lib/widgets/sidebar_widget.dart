@@ -8,12 +8,16 @@ class SidebarWidget extends StatefulWidget {
   final int selectedIndex;
   final ValueChanged<int> onSelect;
   final int notifCount;
+final String architecteNom;
+final VoidCallback onLogout;
 
   const SidebarWidget({
     super.key,
     required this.selectedIndex,
     required this.onSelect,
     this.notifCount = 0,
+     required this.architecteNom,
+  required this.onLogout,
   });
 
   @override
@@ -70,6 +74,8 @@ class _SidebarWidgetState extends State<SidebarWidget>
                   onSelect: widget.onSelect,
                   onCollapse: _toggle,
                   notifCount: widget.notifCount,
+                  architecteNom: widget.architecteNom,
+                   onLogout: widget.onLogout,
                 ),
         );
       },
@@ -178,13 +184,16 @@ class SidebarContent extends StatelessWidget {
   final ValueChanged<int> onSelect;
   final VoidCallback? onCollapse;
   final int notifCount;
-
+final String architecteNom;
+final VoidCallback onLogout;
   const SidebarContent({
     super.key,
     required this.selectedIndex,
     required this.onSelect,
     this.onCollapse,
     this.notifCount = 0,
+      required this.architecteNom,
+  required this.onLogout,
   });
 
   @override
@@ -234,7 +243,40 @@ class SidebarContent extends StatelessWidget {
                 onTap: () => onSelect(i),
               );
             }),
+const Divider(color: Colors.white12),
 
+const SizedBox(height: 10),
+
+Row(
+  children: [
+    Container(
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        color: kAccent.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Text(
+          architecteNom.isNotEmpty ? architecteNom[0] : 'A',
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    ),
+    const SizedBox(width: 10),
+    Expanded(
+      child: Text(
+        architecteNom,
+        style: const TextStyle(color: Colors.white),
+        overflow: TextOverflow.ellipsis,
+      ),
+    ),
+    IconButton(
+      icon: const Icon(LucideIcons.logOut, color: Colors.white54, size: 18),
+      onPressed: onLogout,
+    ),
+  ],
+),
             const Spacer(),
           ],
         ),

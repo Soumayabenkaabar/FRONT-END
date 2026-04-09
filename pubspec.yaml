@@ -25,6 +25,8 @@ dependencies:
   latlong2: ^0.9.0      # coordonnées GPS
   geolocator: ^11.0.0   # position utilisateur
   supabase_flutter: ^2.0.0
+  http: ^1.2.0
+  shared_preferences: ^2.3.0
 
 dev_dependencies:
   flutter_test:
