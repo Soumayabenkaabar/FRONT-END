@@ -7,11 +7,11 @@ import '../models/document.dart';
 import '../models/facture.dart';
 import '../models/commentaire.dart';
 import '../models/membre.dart';
-import '../Service/tache_service.dart';
-import '../Service/document_service.dart';
-import '../Service/facture_service.dart';
-import '../Service/commentaire_service.dart';
-import '../Service/project_member_service.dart';
+import '../service/tache_service.dart';
+import '../service/document_service.dart';
+import '../service/facture_service.dart';
+import '../service/commentaire_service.dart';
+import '../service/project_member_service.dart';
 
 class ProjetDetailScreen extends StatefulWidget {
   final Project project;

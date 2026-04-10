@@ -3,7 +3,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../constants/colors.dart';
 import '../models/project.dart';
 import '../models/facture.dart';
-import '../Service/facture_service.dart';
+import '../service/facture_service.dart';
 
 class FinancesTab extends StatefulWidget {
   final Project project;

@@ -1,5 +1,5 @@
-import 'package:archi_manager/Service/client_service.dart';
-import 'package:archi_manager/Service/membre_service.dart';
+import 'package:archi_manager/service/client_service.dart';
+import 'package:archi_manager/service/membre_service.dart';
 import 'package:archi_manager/models/client.dart';
 import 'package:archi_manager/models/membre.dart';
 import 'package:archi_manager/screens/projet_detail_screen.dart';

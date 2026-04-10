@@ -1,13 +1,11 @@
-import 'package:archi_manager/Service/auth_service.dart';
-
 import '../core/supabase_config.dart';
 import '../models/project.dart';
-import '../service/auth_service.dart' hide AuthService;
+import '../service/auth_service.dart';  // ← services minuscule
 
 class ProjetService {
   static final _db = SupabaseConfig.client;
 
-  // 🔥 GET — RLS filtre automatiquement par user_id
+  // 🔥 GET — RLS filtre automatiquement
   static Future<List<Project>> getProjets() async {
     final data = await _db
         .from('projets')
@@ -18,8 +16,8 @@ class ProjetService {
 
   // ➕ INSERT
   static Future<void> addProjet(Project projet) async {
-    final json = projet.toJson();
-    json['user_id'] = AuthService.currentUser!.id; // ← isolation
+    final json = Map<String, dynamic>.from(projet.toJson());
+    json['user_id'] = AuthService.currentUser!.id;
     await _db.from('projets').insert(json);
   }
 

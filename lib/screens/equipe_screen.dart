@@ -1,5 +1,5 @@
-import 'package:archi_manager/Service/membre_service.dart';
-import 'package:archi_manager/Service/projet_service.dart';
+import 'package:archi_manager/service/membre_service.dart';
+import 'package:archi_manager/service/projet_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../constants/colors.dart';

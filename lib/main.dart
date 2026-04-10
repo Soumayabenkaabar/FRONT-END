@@ -12,11 +12,12 @@ import 'screens/dashboard_screen.dart';
 import 'screens/equipe_screen.dart';
 import 'screens/notifications_screen.dart';
 import 'screens/projets_screen.dart';
-import 'screens/splash_screen.dart'; // ← nouveau
-import 'screens/login_screen.dart'; // ← nouveau
-import 'screens/register_screen.dart'; // ← nouveau
-import 'service/auth_service.dart'; // ← nouveau
+import 'screens/splash_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'service/auth_service.dart';
 import 'widgets/sidebar_widget.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,21 +39,18 @@ class ArchiManagerApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: kAccent),
         useMaterial3: true,
       ),
-      // SplashScreen vérifie la session → redirige vers login ou app
       home: const SplashScreen(),
       routes: {
-        '/login': (_) => const LoginScreen(),
+        '/login':    (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
-        '/home': (_) => const _AppShell(),
+        '/home':     (_) => const _AppShell(),
       },
     );
   }
 }
 
-// ─── App Shell ────────────────────────────────────────────────────────────────
 class _AppShell extends StatefulWidget {
   const _AppShell();
-
   @override
   State<_AppShell> createState() => _AppShellState();
 }
@@ -64,24 +62,15 @@ class _AppShellState extends State<_AppShell> {
 
   Widget _buildPage(int index) {
     switch (index) {
-      case 0:
-        return const DashboardScreen();
-      case 1:
-        return const ProjetsScreen();
-      case 2:
-        return const ClientsScreen();
-      case 3:
-        return const EquipeScreen();
-      case 4:
-        return const AnalyticsScreen();
-      case 5:
-        return const CarteScreen();
-      case 6:
-        return NotificationsScreen(onNotifChanged: () => setState(() {}));
-      case 7:
-        return const ParametresScreen();
-      default:
-        return _PlaceholderScreen(label: navItems[index].label);
+      case 0:  return const DashboardScreen();
+      case 1:  return const ProjetsScreen();
+      case 2:  return const ClientsScreen();
+      case 3:  return const EquipeScreen();
+      case 4:  return const AnalyticsScreen();
+      case 5:  return const CarteScreen();
+      case 6:  return NotificationsScreen(onNotifChanged: () => setState(() {}));
+      case 7:  return const ParametresScreen();
+      default: return _PlaceholderScreen(label: navItems[index].label);
     }
   }
 
@@ -93,21 +82,20 @@ class _AppShellState extends State<_AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.of(context).size.width >= 800;
+    final isWide     = MediaQuery.of(context).size.width >= 800;
     final notifCount = _notifCount;
     final architecte = AuthService.currentUser;
 
-    // ── Desktop / Web ──────────────────────────────────────────────────────
     if (isWide) {
       return Scaffold(
         body: Row(
           children: [
             SidebarWidget(
               selectedIndex: _selectedIndex,
-              onSelect: (i) => setState(() => _selectedIndex = i),
-              notifCount: notifCount,
+              onSelect:      (i) => setState(() => _selectedIndex = i),
+              notifCount:    notifCount,
               architecteNom: architecte?.fullName ?? 'Architecte',
-              onLogout: _logout,
+              onLogout:      _logout,
             ),
             Expanded(child: _buildPage(_selectedIndex)),
           ],
@@ -115,7 +103,6 @@ class _AppShellState extends State<_AppShell> {
       );
     }
 
-    // ── Mobile ─────────────────────────────────────────────────────────────
     return Scaffold(
       backgroundColor: kBg,
       appBar: AppBar(
@@ -129,48 +116,30 @@ class _AppShellState extends State<_AppShell> {
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
-        title: Row(
-          children: const [
+        title: const Row(
+          children: [
             Icon(LucideIcons.building2, color: Colors.amber),
             SizedBox(width: 8),
-            Text(
-              'ArchiManager',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
+            Text('ArchiManager', style: TextStyle(color: Colors.white, fontSize: 16)),
           ],
         ),
         actions: [
           Stack(
             children: [
               IconButton(
-                icon: const Icon(
-                  LucideIcons.bell,
-                  color: Colors.white70,
-                  size: 20,
-                ),
-                onPressed: () =>
-                    setState(() => _selectedIndex = kNotifNavIndex),
+                icon: const Icon(LucideIcons.bell, color: Colors.white70, size: 20),
+                onPressed: () => setState(() => _selectedIndex = kNotifNavIndex),
               ),
               if (notifCount > 0)
                 Positioned(
-                  top: 8,
-                  right: 8,
+                  top: 8, right: 8,
                   child: Container(
-                    width: 16,
-                    height: 16,
-                    decoration: const BoxDecoration(
-                      color: kRed,
-                      shape: BoxShape.circle,
-                    ),
+                    width: 16, height: 16,
+                    decoration: const BoxDecoration(color: kRed, shape: BoxShape.circle),
                     child: Center(
-                      child: Text(
-                        '$notifCount',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                      child: Text('$notifCount',
+                          style: const TextStyle(color: Colors.white,
+                              fontSize: 9, fontWeight: FontWeight.w700)),
                     ),
                   ),
                 ),
@@ -181,86 +150,15 @@ class _AppShellState extends State<_AppShell> {
       ),
       drawer: Drawer(
         backgroundColor: const Color(0xFF1F2937),
-        child: Column(
-          children: [
-            Expanded(
-              child: SidebarContent(
-  selectedIndex: _selectedIndex,
-  onSelect: (i) {
-    setState(() => _selectedIndex = i);
-    Navigator.of(context).pop();
-  },
-  notifCount: notifCount,
-  architecteNom: architecte?.fullName ?? 'Architecte',
-  onLogout: _logout,
-),
-            ),
-            // ── Pied du drawer : nom + déconnexion ──────────────────────
-            const Divider(color: Colors.white12, height: 1),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: kAccent.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        architecte?.initials ?? 'A',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          architecte?.fullName ?? 'Architecte',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (architecte?.cabinet != null)
-                          Text(
-                            architecte!.cabinet!,
-                            style: const TextStyle(
-                              color: Colors.white38,
-                              fontSize: 11,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(
-                      LucideIcons.logOut,
-                      color: Colors.white38,
-                      size: 18,
-                    ),
-                    tooltip: 'Se déconnecter',
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      _logout();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
+        child: SidebarContent(
+          selectedIndex: _selectedIndex,
+          onSelect: (i) {
+            setState(() => _selectedIndex = i);
+            Navigator.of(context).pop();
+          },
+          notifCount:    notifCount,
+          architecteNom: architecte?.fullName ?? 'Architecte',
+          onLogout:      _logout,
         ),
       ),
       body: _buildPage(_selectedIndex),
@@ -268,7 +166,6 @@ class _AppShellState extends State<_AppShell> {
   }
 }
 
-// ─── Placeholder ──────────────────────────────────────────────────────────────
 class _PlaceholderScreen extends StatelessWidget {
   final String label;
   const _PlaceholderScreen({required this.label});
@@ -280,19 +177,11 @@ class _PlaceholderScreen extends StatelessWidget {
       children: [
         const Icon(LucideIcons.construction, size: 48, color: kTextSub),
         const SizedBox(height: 12),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: kTextMain,
-          ),
-        ),
+        Text(label, style: const TextStyle(
+            fontSize: 22, fontWeight: FontWeight.w700, color: kTextMain)),
         const SizedBox(height: 6),
-        const Text(
-          'Page en cours de développement',
-          style: TextStyle(color: kTextSub, fontSize: 13),
-        ),
+        const Text('Page en cours de développement',
+            style: TextStyle(color: kTextSub, fontSize: 13)),
       ],
     ),
   );

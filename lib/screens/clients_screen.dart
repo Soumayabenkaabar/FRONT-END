@@ -1,4 +1,4 @@
-import 'package:archi_manager/Service/client_service.dart';
+import 'package:archi_manager/service/client_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../constants/colors.dart';
