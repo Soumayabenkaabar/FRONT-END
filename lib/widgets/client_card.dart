@@ -46,9 +46,10 @@ class ClientCard extends StatelessWidget {
                 child: Text(
                   client.nom.isNotEmpty ? client.nom[0].toUpperCase() : '?',
                   style: const TextStyle(
-                      color: kAccent,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16),
+                    color: kAccent,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -59,17 +60,17 @@ class ClientCard extends StatelessWidget {
                     Text(
                       client.nom,
                       style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                          color: kTextMain),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: kTextMain,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     if (client.entreprise.isNotEmpty)
                       Text(
                         client.entreprise,
-                        style: const TextStyle(
-                            color: kTextSub, fontSize: 12),
+                        style: const TextStyle(color: kTextSub, fontSize: 12),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -78,8 +79,7 @@ class ClientCard extends StatelessWidget {
               ),
               // Badge accès portail
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: client.accesPortail
                       ? kGreen.withOpacity(0.12)
@@ -89,9 +89,10 @@ class ClientCard extends StatelessWidget {
                 child: Text(
                   client.accesPortail ? 'Actif' : 'Inactif',
                   style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: client.accesPortail ? kGreen : kTextSub),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: client.accesPortail ? kGreen : kTextSub,
+                  ),
                 ),
               ),
             ],
@@ -116,8 +117,7 @@ class ClientCard extends StatelessWidget {
             children: [
               // Nombre de projets
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: kAccent.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(8),
@@ -125,15 +125,15 @@ class ClientCard extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(LucideIcons.briefcase,
-                        size: 11, color: kAccent),
+                    const Icon(LucideIcons.briefcase, size: 11, color: kAccent),
                     const SizedBox(width: 4),
                     Text(
                       '${client.nbProjets} projet${client.nbProjets > 1 ? 's' : ''}',
                       style: const TextStyle(
-                          fontSize: 11,
-                          color: kAccent,
-                          fontWeight: FontWeight.w600),
+                        fontSize: 11,
+                        color: kAccent,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),

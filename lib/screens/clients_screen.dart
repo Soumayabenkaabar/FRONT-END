@@ -232,17 +232,21 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                 hint: '0522123456',
                                 controller: telController,
                                 keyboardType: TextInputType.phone,
-                               validator: (v) {
-  if (v == null || v.trim().isEmpty) return null;
+                                validator: (v) {
+                                  if (v == null || v.trim().isEmpty)
+                                    return null;
 
-  final digits = v.replaceAll(RegExp(r'\D'), '');
+                                  final digits = v.replaceAll(
+                                    RegExp(r'\D'),
+                                    '',
+                                  );
 
-  if (digits.length != 8) {
-    return 'Le numéro doit contenir exactement 8 chiffres';
-  }
+                                  if (digits.length != 8) {
+                                    return 'Le numéro doit contenir exactement 8 chiffres';
+                                  }
 
-  return null;
-},
+                                  return null;
+                                },
                               ),
                               const SizedBox(height: 12),
 
@@ -346,29 +350,37 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                         );
 
                                         try {
-                                         final client = Client(
-  id: clientToEdit?.id ?? '',
-  nom: nomController.text.isNotEmpty
-      ? nomController.text
-      : clientToEdit?.nom ?? '',
+                                          final client = Client(
+                                            id: clientToEdit?.id ?? '',
+                                            nom: nomController.text.isNotEmpty
+                                                ? nomController.text
+                                                : clientToEdit?.nom ?? '',
 
-  email: emailController.text.isNotEmpty
-      ? emailController.text
-      : clientToEdit?.email ?? '',
+                                            email:
+                                                emailController.text.isNotEmpty
+                                                ? emailController.text
+                                                : clientToEdit?.email ?? '',
 
-  telephone: telController.text.isNotEmpty
-      ? telController.text
-      : clientToEdit?.telephone ?? '',
+                                            telephone:
+                                                telController.text.isNotEmpty
+                                                ? telController.text
+                                                : clientToEdit?.telephone ?? '',
 
-  entreprise: entrepriseController.text.isNotEmpty
-      ? entrepriseController.text
-      : clientToEdit?.entreprise ?? '',
+                                            entreprise:
+                                                entrepriseController
+                                                    .text
+                                                    .isNotEmpty
+                                                ? entrepriseController.text
+                                                : clientToEdit?.entreprise ??
+                                                      '',
 
-  nbProjets: clientToEdit?.nbProjets ?? 0,
-  dateDepuis: clientToEdit?.dateDepuis ??
-      DateTime.now().year.toString(),
-  accesPortail: accesPortail,
-);
+                                            nbProjets:
+                                                clientToEdit?.nbProjets ?? 0,
+                                            dateDepuis:
+                                                clientToEdit?.dateDepuis ??
+                                                DateTime.now().year.toString(),
+                                            accesPortail: accesPortail,
+                                          );
 
                                           if (isEdit) {
                                             await ClientService.updateClient(
@@ -880,9 +892,10 @@ class _ClientsScreenState extends State<ClientsScreen> {
                   onPressed: () async {
                     Navigator.pop(context);
                     try {
-if (client.id != null) {
-  await ClientService.deleteClient(client.id!);
-}                      await loadClients();
+                      if (client.id != null) {
+                        await ClientService.deleteClient(client.id!);
+                      }
+                      await loadClients();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: const Text('Client supprimé'),

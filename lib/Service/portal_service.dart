@@ -11,9 +11,7 @@ class ProjetService {
         .select()
         .order('created_at', ascending: false);
 
-    return (data as List)
-        .map((e) => Project.fromJson(e))
-        .toList();
+    return (data as List).map((e) => Project.fromJson(e)).toList();
   }
 
   // ➕ INSERT
@@ -23,10 +21,7 @@ class ProjetService {
 
   // ✏️ UPDATE
   static Future<void> updateProjet(Project projet) async {
-    await _db
-        .from('projets')
-        .update(projet.toJson())
-        .eq('id', projet.id);
+    await _db.from('projets').update(projet.toJson()).eq('id', projet.id);
   }
 
   // 🗑️ DELETE

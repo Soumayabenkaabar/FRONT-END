@@ -31,9 +31,7 @@ class ProjectCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: kCardBg,
         borderRadius: BorderRadius.circular(14),
-        border: const Border(
-          left: BorderSide(color: kAccent, width: 3),
-        ),
+        border: const Border(left: BorderSide(color: kAccent, width: 3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -61,8 +59,10 @@ class ProjectCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: kAccent,
                   borderRadius: BorderRadius.circular(20),
@@ -155,14 +155,15 @@ class _LabeledBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label,
-                style: const TextStyle(color: kTextSub, fontSize: 13)),
-            Text(trailingLabel,
-                style: const TextStyle(
-                  color: kTextMain,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                )),
+            Text(label, style: const TextStyle(color: kTextSub, fontSize: 13)),
+            Text(
+              trailingLabel,
+              style: const TextStyle(
+                color: kTextMain,
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 6),

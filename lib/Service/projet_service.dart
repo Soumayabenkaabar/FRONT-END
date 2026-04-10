@@ -1,6 +1,6 @@
 import '../core/supabase_config.dart';
 import '../models/project.dart';
-import '../service/auth_service.dart';  // ← services minuscule
+import '../service/auth_service.dart'; // ← services minuscule
 
 class ProjetService {
   static final _db = SupabaseConfig.client;

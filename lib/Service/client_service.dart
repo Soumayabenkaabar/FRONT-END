@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../core/supabase_config.dart';
 import '../models/client.dart';
-import '../service/auth_service.dart';  // ← services minuscule
+import '../service/auth_service.dart'; // ← services minuscule
 
 class ClientService {
   static final _db = SupabaseConfig.client;
@@ -52,7 +52,7 @@ class ClientService {
 
   static String _generateTempPassword(String email) {
     final prefix = email.split('@').first;
-    final short  = prefix.substring(0, prefix.length < 4 ? prefix.length : 4);
+    final short = prefix.substring(0, prefix.length < 4 ? prefix.length : 4);
     return 'Client@${short}2024!';
   }
 

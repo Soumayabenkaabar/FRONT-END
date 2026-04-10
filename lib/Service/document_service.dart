@@ -25,18 +25,16 @@ class DocumentService {
         .eq('projet_id', projetId)
         .order('created_at', ascending: true);
 
-    return (response as List)
-        .map((json) => Document.fromJson(json))
-        .toList();
+    return (response as List).map((json) => Document.fromJson(json)).toList();
   }
 
   // ── Ajouter un document ────────────────────────────────────────────────────
   static Future<void> addDocument(Document document) async {
     await _db.from('documents').insert({
       'projet_id': document.projetId,
-      'nom':       document.nom,
-      'url':       document.url,
-      'type':      document.type,
+      'nom': document.nom,
+      'url': document.url,
+      'type': document.type,
     });
   }
 

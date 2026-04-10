@@ -35,102 +35,106 @@ class AnalyticsScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // ── KPI Stats ────────────────────────────────────────────────
-            LayoutBuilder(builder: (context, constraints) {
-              final isWide = constraints.maxWidth > 700;
-              final statCards = [
-                _StatCard(
-                  label: 'Coût moyen par projet',
-                  value: '8.666.666,67 MAD',
-                  sub: 'Budget moyen alloué',
-                  icon: LucideIcons.dollarSign,
-                  iconColor: kAccent,
-                ),
-                _StatCard(
-                  label: 'Rentabilité',
-                  value: '92.7%',
-                  sub: 'Marge bénéficiaire moyenne',
-                  icon: LucideIcons.trendingUp,
-                  iconColor: kAccent,
-                ),
-                _StatCard(
-                  label: 'Durée moyenne',
-                  value: '15.8 mois',
-                  sub: 'Temps de réalisation moyen',
-                  icon: LucideIcons.clock,
-                  iconColor: kAccent,
-                ),
-                _StatCard(
-                  label: 'Taux de réalisation',
-                  value: '7.3%',
-                  sub: 'Budget consommé',
-                  icon: LucideIcons.target,
-                  iconColor: kTextSub,
-                ),
-              ];
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isWide = constraints.maxWidth > 700;
+                final statCards = [
+                  _StatCard(
+                    label: 'Coût moyen par projet',
+                    value: '8.666.666,67 MAD',
+                    sub: 'Budget moyen alloué',
+                    icon: LucideIcons.dollarSign,
+                    iconColor: kAccent,
+                  ),
+                  _StatCard(
+                    label: 'Rentabilité',
+                    value: '92.7%',
+                    sub: 'Marge bénéficiaire moyenne',
+                    icon: LucideIcons.trendingUp,
+                    iconColor: kAccent,
+                  ),
+                  _StatCard(
+                    label: 'Durée moyenne',
+                    value: '15.8 mois',
+                    sub: 'Temps de réalisation moyen',
+                    icon: LucideIcons.clock,
+                    iconColor: kAccent,
+                  ),
+                  _StatCard(
+                    label: 'Taux de réalisation',
+                    value: '7.3%',
+                    sub: 'Budget consommé',
+                    icon: LucideIcons.target,
+                    iconColor: kTextSub,
+                  ),
+                ];
 
-              if (isWide) {
-                return IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (int i = 0; i < statCards.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 16),
-                        Expanded(child: statCards[i]),
+                if (isWide) {
+                  return IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        for (int i = 0; i < statCards.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 16),
+                          Expanded(child: statCards[i]),
+                        ],
                       ],
-                    ],
-                  ),
+                    ),
+                  );
+                }
+                return Column(
+                  children: [
+                    IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(child: statCards[0]),
+                          const SizedBox(width: 12),
+                          Expanded(child: statCards[1]),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(child: statCards[2]),
+                          const SizedBox(width: 12),
+                          Expanded(child: statCards[3]),
+                        ],
+                      ),
+                    ),
+                  ],
                 );
-              }
-              return Column(
-                children: [
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(child: statCards[0]),
-                        const SizedBox(width: 12),
-                        Expanded(child: statCards[1]),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(child: statCards[2]),
-                        const SizedBox(width: 12),
-                        Expanded(child: statCards[3]),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }),
+              },
+            ),
 
             const SizedBox(height: 24),
 
             // ── Charts row ───────────────────────────────────────────────
-            LayoutBuilder(builder: (context, constraints) {
-              if (constraints.maxWidth > 700) {
-                return const Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth > 700) {
+                  return const Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(flex: 3, child: _BarChartCard(chartHeight: 200)),
+                      SizedBox(width: 20),
+                      Expanded(flex: 2, child: _PieChartCard(chartHeight: 200)),
+                    ],
+                  );
+                }
+                // Mobile : graphiques plus petits empilés
+                return const Column(
                   children: [
-                    Expanded(flex: 3, child: _BarChartCard(chartHeight: 200)),
-                    SizedBox(width: 20),
-                    Expanded(flex: 2, child: _PieChartCard(chartHeight: 200)),
+                    _BarChartCard(chartHeight: 150),
+                    SizedBox(height: 14),
+                    _PieChartCard(chartHeight: 150),
                   ],
                 );
-              }
-              // Mobile : graphiques plus petits empilés
-              return const Column(
-                children: [
-                  _BarChartCard(chartHeight: 150),
-                  SizedBox(height: 14),
-                  _PieChartCard(chartHeight: 150),
-                ],
-              );
-            }),
+              },
+            ),
 
             const SizedBox(height: 24),
 
@@ -183,30 +187,36 @@ class _StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Text(label,
-                    style: TextStyle(
-                        color: kTextSub,
-                        fontSize: isMobile ? 11 : 13,
-                        fontWeight: FontWeight.w500),
-                    overflow: TextOverflow.ellipsis),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: kTextSub,
+                    fontSize: isMobile ? 11 : 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               const SizedBox(width: 4),
               Icon(icon, color: iconColor, size: isMobile ? 16 : 20),
             ],
           ),
           SizedBox(height: isMobile ? 8 : 10),
-          Text(value,
-              style: TextStyle(
-                fontSize: isMobile ? 15 : 20,
-                fontWeight: FontWeight.w800,
-                color: kTextMain,
-              ),
-              overflow: TextOverflow.ellipsis),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: isMobile ? 15 : 20,
+              fontWeight: FontWeight.w800,
+              color: kTextMain,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
           SizedBox(height: isMobile ? 4 : 6),
-          Text(sub,
-              style: TextStyle(
-                  color: kTextSub, fontSize: isMobile ? 10 : 12),
-              overflow: TextOverflow.ellipsis),
+          Text(
+            sub,
+            style: TextStyle(color: kTextSub, fontSize: isMobile ? 10 : 12),
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
@@ -239,9 +249,10 @@ class _BarChartCard extends StatelessWidget {
           const Text(
             'Budget vs Dépenses par projet',
             style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: kTextMain),
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: kTextMain,
+            ),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -258,8 +269,9 @@ class _BarChartCard extends StatelessWidget {
               _LegendItem(color: kAccent, label: 'Budget (k MAD)'),
               const SizedBox(width: 16),
               _LegendItem(
-                  color: const Color(0xFF4B5563),
-                  label: 'Dépensé (k MAD)'),
+                color: const Color(0xFF4B5563),
+                label: 'Dépensé (k MAD)',
+              ),
             ],
           ),
         ],
@@ -278,13 +290,15 @@ class _LegendItem extends StatelessWidget {
     return Row(
       children: [
         Container(
-            width: 12,
-            height: 12,
-            decoration:
-                BoxDecoration(color: color, borderRadius: BorderRadius.circular(3))),
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
         const SizedBox(width: 6),
-        Text(label,
-            style: const TextStyle(color: kTextSub, fontSize: 12)),
+        Text(label, style: const TextStyle(color: kTextSub, fontSize: 12)),
       ],
     );
   }
@@ -336,8 +350,12 @@ class _BarChartPainter extends CustomPainter {
       final budgetPaint = Paint()..color = kAccent;
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTWH(cx - barW - gap / 2,
-              padding.top + chartH - bh, barW, bh),
+          Rect.fromLTWH(
+            cx - barW - gap / 2,
+            padding.top + chartH - bh,
+            barW,
+            bh,
+          ),
           const Radius.circular(4),
         ),
         budgetPaint,
@@ -348,8 +366,7 @@ class _BarChartPainter extends CustomPainter {
       final depPaint = Paint()..color = const Color(0xFF4B5563);
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          Rect.fromLTWH(
-              cx + gap / 2, padding.top + chartH - dh, barW, dh),
+          Rect.fromLTWH(cx + gap / 2, padding.top + chartH - dh, barW, dh),
           const Radius.circular(4),
         ),
         depPaint,
@@ -372,16 +389,25 @@ class _BarChartPainter extends CustomPainter {
     final axisPaint = Paint()
       ..color = const Color(0xFFD1D5DB)
       ..strokeWidth = 1.5;
-    canvas.drawLine(Offset(padding.left, padding.top),
-        Offset(padding.left, padding.top + chartH), axisPaint);
     canvas.drawLine(
-        Offset(padding.left, padding.top + chartH),
-        Offset(padding.left + chartW, padding.top + chartH),
-        axisPaint);
+      Offset(padding.left, padding.top),
+      Offset(padding.left, padding.top + chartH),
+      axisPaint,
+    );
+    canvas.drawLine(
+      Offset(padding.left, padding.top + chartH),
+      Offset(padding.left + chartW, padding.top + chartH),
+      axisPaint,
+    );
   }
 
-  void _drawText(Canvas canvas, String text, Offset offset,
-      TextStyle style, double maxWidth) {
+  void _drawText(
+    Canvas canvas,
+    String text,
+    Offset offset,
+    TextStyle style,
+    double maxWidth,
+  ) {
     final tp = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
@@ -419,9 +445,10 @@ class _PieChartCard extends StatelessWidget {
           const Text(
             'Répartition par statut',
             style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: kTextMain),
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: kTextMain,
+            ),
           ),
           const SizedBox(height: 16),
 
@@ -433,9 +460,7 @@ class _PieChartCard extends StatelessWidget {
               SizedBox(
                 width: chartHeight * 0.75,
                 height: chartHeight * 0.75,
-                child: CustomPaint(
-                  painter: _PieChartPainter(),
-                ),
+                child: CustomPaint(painter: _PieChartPainter()),
               ),
               const SizedBox(width: 20),
 
@@ -471,8 +496,11 @@ class _PieLegendItem extends StatelessWidget {
   final Color color;
   final String label;
   final String value;
-  const _PieLegendItem(
-      {required this.color, required this.label, required this.value});
+  const _PieLegendItem({
+    required this.color,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -488,14 +516,19 @@ class _PieLegendItem extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(label,
-              style: const TextStyle(color: kTextSub, fontSize: 12)),
+          child: Text(
+            label,
+            style: const TextStyle(color: kTextSub, fontSize: 12),
+          ),
         ),
-        Text(value,
-            style: TextStyle(
-                color: color,
-                fontSize: 13,
-                fontWeight: FontWeight.w700)),
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
     );
   }
@@ -507,10 +540,7 @@ class _PieChartPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.shortestSide * 0.48;
 
-    const slices = [
-      (0.67, kAccent),
-      (0.33, Color(0xFF4B5563)),
-    ];
+    const slices = [(0.67, kAccent), (0.33, Color(0xFF4B5563))];
 
     double startAngle = -1.5708; // -90°
     for (final (fraction, color) in slices) {
@@ -529,11 +559,7 @@ class _PieChartPainter extends CustomPainter {
     }
 
     // Trou blanc central
-    canvas.drawCircle(
-      center,
-      radius * 0.5,
-      Paint()..color = Colors.white,
-    );
+    canvas.drawCircle(center, radius * 0.5, Paint()..color = Colors.white);
   }
 
   @override
@@ -557,9 +583,10 @@ class _GanttCard extends StatelessWidget {
             title: const Text(
               'Planning Gantt',
               style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
             ),
             leading: IconButton(
               icon: const Icon(Icons.close_rounded, color: Colors.white),
@@ -601,9 +628,10 @@ class _GanttCard extends StatelessWidget {
                   child: Text(
                     'Planning Gantt de tous les projets',
                     style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: kTextMain),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: kTextMain,
+                    ),
                   ),
                 ),
                 // Bouton expand
@@ -649,7 +677,7 @@ class _GanttContent extends StatefulWidget {
 
 class _GanttContentState extends State<_GanttContent> {
   final ScrollController _headerScroll = ScrollController();
-  final ScrollController _bodyScroll   = ScrollController();
+  final ScrollController _bodyScroll = ScrollController();
 
   @override
   void initState() {
@@ -678,9 +706,9 @@ class _GanttContentState extends State<_GanttContent> {
   @override
   Widget build(BuildContext context) {
     const projectColW = 180.0;
-    const cellW       = 60.0;
+    const cellW = 60.0;
     const totalMonths = 24;
-    const timelineW   = totalMonths * cellW;
+    const timelineW = totalMonths * cellW;
 
     return Column(
       children: [
@@ -695,11 +723,14 @@ class _GanttContentState extends State<_GanttContent> {
                 width: projectColW,
                 child: const Padding(
                   padding: EdgeInsets.only(left: 20),
-                  child: Text('Projet',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13)),
+                  child: Text(
+                    'Projet',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
               ),
               // Timeline header scrollable
@@ -711,13 +742,18 @@ class _GanttContentState extends State<_GanttContent> {
                     width: timelineW,
                     child: Row(
                       children: _GanttHeaderLabels.months
-                          .map((m) => SizedBox(
-                                width: cellW,
-                                child: Text(m,
-                                    style: const TextStyle(
-                                        color: Colors.white54,
-                                        fontSize: 10)),
-                              ))
+                          .map(
+                            (m) => SizedBox(
+                              width: cellW,
+                              child: Text(
+                                m,
+                                style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          )
                           .toList(),
                     ),
                   ),
@@ -728,13 +764,15 @@ class _GanttContentState extends State<_GanttContent> {
         ),
 
         // ── Rows ────────────────────────────────────────────────────────
-        ...sampleProjects.map((p) => _GanttRow(
-              project: p,
-              projectColW: projectColW,
-              cellW: cellW,
-              totalMonths: totalMonths,
-              scrollController: _bodyScroll,
-            )),
+        ...sampleProjects.map(
+          (p) => _GanttRow(
+            project: p,
+            projectColW: projectColW,
+            cellW: cellW,
+            totalMonths: totalMonths,
+            scrollController: _bodyScroll,
+          ),
+        ),
       ],
     );
   }
@@ -743,10 +781,30 @@ class _GanttContentState extends State<_GanttContent> {
 class _GanttHeaderLabels extends StatelessWidget {
   // 24 months from Jan 2026
   static const months = [
-    'janv. 26', 'févr. 26', 'mars 26', 'avr. 26', 'mai 26', 'juin 26',
-    'juil. 26', 'août 26', 'sept. 26', 'oct. 26', 'nov. 26', 'déc. 26',
-    'janv. 27', 'févr. 27', 'mars 27', 'avr. 27', 'mai 27', 'juin 27',
-    'juil. 27', 'août 27', 'sept. 27', 'oct. 27', 'nov. 27', 'déc. 27',
+    'janv. 26',
+    'févr. 26',
+    'mars 26',
+    'avr. 26',
+    'mai 26',
+    'juin 26',
+    'juil. 26',
+    'août 26',
+    'sept. 26',
+    'oct. 26',
+    'nov. 26',
+    'déc. 26',
+    'janv. 27',
+    'févr. 27',
+    'mars 27',
+    'avr. 27',
+    'mai 27',
+    'juin 27',
+    'juil. 27',
+    'août 27',
+    'sept. 27',
+    'oct. 27',
+    'nov. 27',
+    'déc. 27',
   ];
 
   const _GanttHeaderLabels();
@@ -755,12 +813,15 @@ class _GanttHeaderLabels extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: months
-          .map((m) => SizedBox(
-                width: 60,
-                child: Text(m,
-                    style: const TextStyle(
-                        color: Colors.white54, fontSize: 10)),
-              ))
+          .map(
+            (m) => SizedBox(
+              width: 60,
+              child: Text(
+                m,
+                style: const TextStyle(color: Colors.white54, fontSize: 10),
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -783,9 +844,10 @@ class _GanttMobileCard extends StatelessWidget {
             title: const Text(
               'Planning Gantt',
               style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
             ),
             leading: IconButton(
               icon: const Icon(Icons.close_rounded, color: Colors.white),
@@ -809,16 +871,20 @@ class _GanttMobileCard extends StatelessWidget {
         // Titre + bouton expand
         Row(
           children: [
-            const Icon(Icons.calendar_month_rounded,
-                color: kTextMain, size: 18),
+            const Icon(
+              Icons.calendar_month_rounded,
+              color: kTextMain,
+              size: 18,
+            ),
             const SizedBox(width: 8),
             const Expanded(
               child: Text(
                 'Planning Gantt',
                 style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: kTextMain),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: kTextMain,
+                ),
               ),
             ),
             InkWell(
@@ -886,14 +952,17 @@ class _GanttMobileCard extends StatelessWidget {
                       child: Text(
                         p.title,
                         style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: kTextMain),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          color: kTextMain,
+                        ),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: barColor.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(20),
@@ -901,9 +970,10 @@ class _GanttMobileCard extends StatelessWidget {
                       child: Text(
                         p.status,
                         style: TextStyle(
-                            color: barColor,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600),
+                          color: barColor,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -913,12 +983,16 @@ class _GanttMobileCard extends StatelessWidget {
                 // Dates
                 Row(
                   children: [
-                    const Icon(Icons.calendar_today_rounded,
-                        size: 12, color: kTextSub),
+                    const Icon(
+                      Icons.calendar_today_rounded,
+                      size: 12,
+                      color: kTextSub,
+                    ),
                     const SizedBox(width: 5),
-                    Text(dates,
-                        style: const TextStyle(
-                            color: kTextSub, fontSize: 12)),
+                    Text(
+                      dates,
+                      style: const TextStyle(color: kTextSub, fontSize: 12),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 4),
@@ -926,12 +1000,16 @@ class _GanttMobileCard extends StatelessWidget {
                 // Tâches
                 Row(
                   children: [
-                    const Icon(Icons.task_alt_rounded,
-                        size: 12, color: kTextSub),
+                    const Icon(
+                      Icons.task_alt_rounded,
+                      size: 12,
+                      color: kTextSub,
+                    ),
                     const SizedBox(width: 5),
-                    Text('${p.taches} tâches',
-                        style: const TextStyle(
-                            color: kTextSub, fontSize: 12)),
+                    Text(
+                      '${p.taches} tâches',
+                      style: const TextStyle(color: kTextSub, fontSize: 12),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -940,14 +1018,18 @@ class _GanttMobileCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Progression',
-                        style:
-                            TextStyle(color: kTextSub, fontSize: 12)),
-                    Text('$pct%',
-                        style: TextStyle(
-                            color: barColor,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 12)),
+                    const Text(
+                      'Progression',
+                      style: TextStyle(color: kTextSub, fontSize: 12),
+                    ),
+                    Text(
+                      '$pct%',
+                      style: TextStyle(
+                        color: barColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 6),
@@ -988,21 +1070,24 @@ class _GanttRow extends StatelessWidget {
   // Map project to start/end month index (0 = Jan 2026)
   (int, int) get _range {
     switch (project.titre) {
-      case 'Villa Moderne Casablanca':   return (0, 11);  // jan-déc 2026
-      case 'Immeuble Résidentiel Rabat': return (1, 17);  // fév 2026-juin 2027
-      default:                           return (5, 23);  // juin 2026-déc 2027
+      case 'Villa Moderne Casablanca':
+        return (0, 11); // jan-déc 2026
+      case 'Immeuble Résidentiel Rabat':
+        return (1, 17); // fév 2026-juin 2027
+      default:
+        return (5, 23); // juin 2026-déc 2027
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final (start, end) = _range;
-    final totalW  = totalMonths * cellW;
+    final totalW = totalMonths * cellW;
     final barLeft = start * cellW;
-    final barW    = (end - start + 1) * cellW;
-    final progress   = project.avancement;
+    final barW = (end - start + 1) * cellW;
+    final progress = project.avancement;
     final isPlanning = project.statut == 'Planification';
-    final barColor   = isPlanning ? const Color(0xFF6B7280) : kAccent;
+    final barColor = isPlanning ? const Color(0xFF6B7280) : kAccent;
 
     return Container(
       decoration: const BoxDecoration(
@@ -1023,9 +1108,10 @@ class _GanttRow extends StatelessWidget {
                   Text(
                     project.titre,
                     style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                        color: kTextMain),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                      color: kTextMain,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
@@ -1056,8 +1142,9 @@ class _GanttRow extends StatelessWidget {
                         top: 0,
                         bottom: 0,
                         child: Container(
-                            width: 1,
-                            color: const Color(0xFFF3F4F6)),
+                          width: 1,
+                          color: const Color(0xFFF3F4F6),
+                        ),
                       ),
                     ),
                     // Background bar

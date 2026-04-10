@@ -34,9 +34,9 @@ class CommentaireService {
   static Future<void> addCommentaire(Commentaire commentaire) async {
     await _db.from('commentaires').insert({
       'projet_id': commentaire.projetId,
-      'auteur':    commentaire.auteur,
-      'role':      commentaire.role,
-      'contenu':   commentaire.contenu,
+      'auteur': commentaire.auteur,
+      'role': commentaire.role,
+      'contenu': commentaire.contenu,
     });
   }
 

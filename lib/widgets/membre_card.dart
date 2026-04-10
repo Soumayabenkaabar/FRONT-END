@@ -8,15 +8,15 @@ class MembreDisponibleCard extends StatelessWidget {
   final Membre membre;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
-final VoidCallback? onView;
-final VoidCallback? onAssign;
+  final VoidCallback? onView;
+  final VoidCallback? onAssign;
 
   const MembreDisponibleCard({
     required this.membre,
     this.onEdit,
     this.onDelete,
     this.onView,
-this.onAssign,
+    this.onAssign,
   });
   @override
   Widget build(BuildContext context) {
@@ -128,7 +128,7 @@ this.onAssign,
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                  onPressed: onAssign,
+                    onPressed: onAssign,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kAccent,
                       elevation: 0,
@@ -153,12 +153,20 @@ this.onAssign,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                      icon: const Icon(LucideIcons.pencil, size: 18, color: kTextSub),
+                      icon: const Icon(
+                        LucideIcons.pencil,
+                        size: 18,
+                        color: kTextSub,
+                      ),
                       onPressed: onEdit,
                       tooltip: 'Modifier',
                     ),
                     IconButton(
-                      icon: const Icon(LucideIcons.trash2, size: 18, color: kRed),
+                      icon: const Icon(
+                        LucideIcons.trash2,
+                        size: 18,
+                        color: kRed,
+                      ),
                       onPressed: onDelete,
                       tooltip: 'Supprimer',
                     ),
@@ -206,18 +214,18 @@ class MembreActifRow extends StatelessWidget {
         ],
       ),
       child: isMobile
-    ? _MobileActifLayout(
-        membre: membre,
-        onEdit: onEdit,
-        onDelete: onDelete,
-        onView: onView,
-      )
-    : _DesktopActifLayout(
-        membre: membre,
-        onEdit: onEdit,
-        onDelete: onDelete,
-        onView: onView,
-      ),
+          ? _MobileActifLayout(
+              membre: membre,
+              onEdit: onEdit,
+              onDelete: onDelete,
+              onView: onView,
+            )
+          : _DesktopActifLayout(
+              membre: membre,
+              onEdit: onEdit,
+              onDelete: onDelete,
+              onView: onView,
+            ),
     );
   }
 }
@@ -323,25 +331,33 @@ class _DesktopActifLayout extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-             Row(
-  children: [
-    IconButton(
-      icon: const Icon(LucideIcons.eye, size: 18, color: kTextSub),
-      onPressed: onView,
-      tooltip: 'Consulter',
-    ),
-    IconButton(
-      icon: const Icon(LucideIcons.pencil, size: 18, color: kTextSub),
-      onPressed: onEdit,
-      tooltip: 'Modifier',
-    ),
-    IconButton(
-      icon: const Icon(LucideIcons.trash2, size: 18, color: kRed),
-      onPressed: onDelete,
-      tooltip: 'Supprimer',
-    ),
-  ],
-)
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      LucideIcons.eye,
+                      size: 18,
+                      color: kTextSub,
+                    ),
+                    onPressed: onView,
+                    tooltip: 'Consulter',
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      LucideIcons.pencil,
+                      size: 18,
+                      color: kTextSub,
+                    ),
+                    onPressed: onEdit,
+                    tooltip: 'Modifier',
+                  ),
+                  IconButton(
+                    icon: const Icon(LucideIcons.trash2, size: 18, color: kRed),
+                    onPressed: onDelete,
+                    tooltip: 'Supprimer',
+                  ),
+                ],
+              ),
             ],
           ),
         ),

@@ -9,7 +9,7 @@ Widget glassContainer({required Widget child}) {
       filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
       child: Container(
         width: double.infinity, // ok
-                constraints: BoxConstraints(maxWidth: 450), 
+        constraints: BoxConstraints(maxWidth: 450),
         padding: EdgeInsets.all(30),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.15),
@@ -20,5 +20,4 @@ Widget glassContainer({required Widget child}) {
       ),
     ),
   );
-
 }

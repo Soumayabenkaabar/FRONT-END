@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../core/supabase_config.dart';
 import '../models/membre.dart';
-import '../service/auth_service.dart';  // ← services minuscule
+import '../service/auth_service.dart'; // ← services minuscule
 
 class MembreService {
   static final supabase = SupabaseConfig.client;
@@ -36,7 +36,7 @@ class MembreService {
     required String projectId,
   }) async {
     await supabase.from('project_members').insert({
-      'membre_id':  membreId,
+      'membre_id': membreId,
       'project_id': projectId,
     });
   }
@@ -49,10 +49,10 @@ class MembreService {
     if (membre.id.isEmpty) return;
     final updatedProjects = List<String>.from(membre.projetsAssignes);
     if (!updatedProjects.contains(projet)) updatedProjects.add(projet);
-    await supabase.from('membres').update({
-      'projets_assignes': updatedProjects,
-      'disponible':       false,
-    }).eq('id', membre.id);
+    await supabase
+        .from('membres')
+        .update({'projets_assignes': updatedProjects, 'disponible': false})
+        .eq('id', membre.id);
     debugPrint("ASSIGNED: $projet to ${membre.nom}");
   }
 

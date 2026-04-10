@@ -79,7 +79,9 @@ class ProjectFullCard extends StatelessWidget {
                         // Status badge
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: _statusColor,
                             borderRadius: BorderRadius.circular(20),
@@ -99,7 +101,9 @@ class ProjectFullCard extends StatelessWidget {
                         // Accès client badge
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFFE8F5E9),
                             borderRadius: BorderRadius.circular(20),
@@ -107,8 +111,11 @@ class ProjectFullCard extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: const [
-                              Icon(LucideIcons.userCheck,
-                                  size: 11, color: Color(0xFF28A745)),
+                              Icon(
+                                LucideIcons.userCheck,
+                                size: 11,
+                                color: Color(0xFF28A745),
+                              ),
                               SizedBox(width: 4),
                               Text(
                                 'Accès Client',
@@ -140,8 +147,10 @@ class ProjectFullCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Progression',
-                        style: TextStyle(color: kTextSub, fontSize: 13)),
+                    const Text(
+                      'Progression',
+                      style: TextStyle(color: kTextSub, fontSize: 13),
+                    ),
                     Text(
                       '${(project.progress * 100).toInt()}%',
                       style: const TextStyle(
@@ -159,16 +168,14 @@ class ProjectFullCard extends StatelessWidget {
                     value: project.progress,
                     minHeight: 7,
                     backgroundColor: const Color(0xFFE9ECEF),
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(_statusColor),
+                    valueColor: AlwaysStoppedAnimation<Color>(_statusColor),
                   ),
                 ),
 
                 const SizedBox(height: 14),
 
                 // Localisation, Chef, Dates
-                _InfoRow(
-                    icon: LucideIcons.mapPin, text: project.localisation),
+                _InfoRow(icon: LucideIcons.mapPin, text: project.localisation),
                 const SizedBox(height: 6),
                 _InfoRow(icon: LucideIcons.user, text: project.chef),
                 const SizedBox(height: 6),
@@ -189,13 +196,15 @@ class ProjectFullCard extends StatelessWidget {
             child: Column(
               children: [
                 _BudgetRow(
-                    label: 'Budget',
-                    value: _formatDt(project.budgetTotal)),
+                  label: 'Budget',
+                  value: _formatDt(project.budgetTotal),
+                ),
                 const SizedBox(height: 4),
                 _BudgetRow(
-                    label: 'Dépensé',
-                    value: _formatDt(project.budgetDepense),
-                    bold: true),
+                  label: 'Dépensé',
+                  value: _formatDt(project.budgetDepense),
+                  bold: true,
+                ),
               ],
             ),
           ),
@@ -245,8 +254,10 @@ class _InfoRow extends StatelessWidget {
         Icon(icon, size: 14, color: kTextSub),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(text,
-              style: const TextStyle(color: kTextSub, fontSize: 13)),
+          child: Text(
+            text,
+            style: const TextStyle(color: kTextSub, fontSize: 13),
+          ),
         ),
       ],
     );
@@ -257,16 +268,18 @@ class _BudgetRow extends StatelessWidget {
   final String label;
   final String value;
   final bool bold;
-  const _BudgetRow(
-      {required this.label, required this.value, this.bold = false});
+  const _BudgetRow({
+    required this.label,
+    required this.value,
+    this.bold = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label,
-            style: const TextStyle(color: kTextSub, fontSize: 13)),
+        Text(label, style: const TextStyle(color: kTextSub, fontSize: 13)),
         Text(
           value,
           style: TextStyle(

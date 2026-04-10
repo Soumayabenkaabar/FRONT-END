@@ -11,54 +11,58 @@ class ParametresScreen extends StatefulWidget {
 
 class _ParametresScreenState extends State<ParametresScreen> {
   // Profil
-  final _prenomCtrl    = TextEditingController(text: 'Ahmed');
-  final _nomCtrl       = TextEditingController(text: 'Bennani');
-  final _emailCtrl     = TextEditingController(text: 'ahmed.bennani@archi.ma');
-  final _telCtrl       = TextEditingController(text: '0661234567');
-  final _entrepriseCtrl= TextEditingController(text: 'ArchiManager Pro');
-  final _roleCtrl      = TextEditingController(text: 'Architecte');
+  final _prenomCtrl = TextEditingController(text: 'Ahmed');
+  final _nomCtrl = TextEditingController(text: 'Bennani');
+  final _emailCtrl = TextEditingController(text: 'ahmed.bennani@archi.ma');
+  final _telCtrl = TextEditingController(text: '0661234567');
+  final _entrepriseCtrl = TextEditingController(text: 'ArchiManager Pro');
+  final _roleCtrl = TextEditingController(text: 'Architecte');
 
   // Canaux
   bool _emailNotif = true;
-  bool _pushNotif  = true;
+  bool _pushNotif = true;
 
   // Types d'alertes
-  bool _majProjets       = true;
-  bool _commentaires     = true;
-  bool _tachesDemain     = true;
-  bool _congesEquipe     = true;
-  bool _reunions         = true;
+  bool _majProjets = true;
+  bool _commentaires = true;
+  bool _tachesDemain = true;
+  bool _congesEquipe = true;
+  bool _reunions = true;
 
   // Suivi des modifications
   bool _hasChanges = false;
 
   // Valeurs initiales pour reset
   late final Map<String, String> _initialText;
-  late final Map<String, bool>   _initialBools;
+  late final Map<String, bool> _initialBools;
 
   @override
   void initState() {
     super.initState();
     _initialText = {
-      'prenom':     _prenomCtrl.text,
-      'nom':        _nomCtrl.text,
-      'email':      _emailCtrl.text,
-      'tel':        _telCtrl.text,
+      'prenom': _prenomCtrl.text,
+      'nom': _nomCtrl.text,
+      'email': _emailCtrl.text,
+      'tel': _telCtrl.text,
       'entreprise': _entrepriseCtrl.text,
-      'role':       _roleCtrl.text,
+      'role': _roleCtrl.text,
     };
     _initialBools = {
-      'email':      _emailNotif,
-      'push':       _pushNotif,
-      'maj':        _majProjets,
-      'comm':       _commentaires,
-      'taches':     _tachesDemain,
-      'conges':     _congesEquipe,
-      'reunions':   _reunions,
+      'email': _emailNotif,
+      'push': _pushNotif,
+      'maj': _majProjets,
+      'comm': _commentaires,
+      'taches': _tachesDemain,
+      'conges': _congesEquipe,
+      'reunions': _reunions,
     };
     for (final ctrl in [
-      _prenomCtrl, _nomCtrl, _emailCtrl,
-      _telCtrl, _entrepriseCtrl, _roleCtrl
+      _prenomCtrl,
+      _nomCtrl,
+      _emailCtrl,
+      _telCtrl,
+      _entrepriseCtrl,
+      _roleCtrl,
     ]) {
       ctrl.addListener(_checkChanges);
     }
@@ -66,21 +70,21 @@ class _ParametresScreenState extends State<ParametresScreen> {
 
   void _checkChanges() {
     final textChanged =
-        _prenomCtrl.text    != _initialText['prenom']     ||
-        _nomCtrl.text       != _initialText['nom']        ||
-        _emailCtrl.text     != _initialText['email']      ||
-        _telCtrl.text       != _initialText['tel']        ||
-        _entrepriseCtrl.text!= _initialText['entreprise'] ||
-        _roleCtrl.text      != _initialText['role'];
+        _prenomCtrl.text != _initialText['prenom'] ||
+        _nomCtrl.text != _initialText['nom'] ||
+        _emailCtrl.text != _initialText['email'] ||
+        _telCtrl.text != _initialText['tel'] ||
+        _entrepriseCtrl.text != _initialText['entreprise'] ||
+        _roleCtrl.text != _initialText['role'];
 
     final boolChanged =
-        _emailNotif   != _initialBools['email']    ||
-        _pushNotif    != _initialBools['push']     ||
-        _majProjets   != _initialBools['maj']      ||
-        _commentaires != _initialBools['comm']     ||
-        _tachesDemain != _initialBools['taches']   ||
-        _congesEquipe != _initialBools['conges']   ||
-        _reunions     != _initialBools['reunions'];
+        _emailNotif != _initialBools['email'] ||
+        _pushNotif != _initialBools['push'] ||
+        _majProjets != _initialBools['maj'] ||
+        _commentaires != _initialBools['comm'] ||
+        _tachesDemain != _initialBools['taches'] ||
+        _congesEquipe != _initialBools['conges'] ||
+        _reunions != _initialBools['reunions'];
 
     final changed = textChanged || boolChanged;
     if (changed != _hasChanges) setState(() => _hasChanges = changed);
@@ -88,28 +92,32 @@ class _ParametresScreenState extends State<ParametresScreen> {
 
   void _cancel() {
     setState(() {
-      _prenomCtrl.text     = _initialText['prenom']!;
-      _nomCtrl.text        = _initialText['nom']!;
-      _emailCtrl.text      = _initialText['email']!;
-      _telCtrl.text        = _initialText['tel']!;
+      _prenomCtrl.text = _initialText['prenom']!;
+      _nomCtrl.text = _initialText['nom']!;
+      _emailCtrl.text = _initialText['email']!;
+      _telCtrl.text = _initialText['tel']!;
       _entrepriseCtrl.text = _initialText['entreprise']!;
-      _roleCtrl.text       = _initialText['role']!;
-      _emailNotif   = _initialBools['email']!;
-      _pushNotif    = _initialBools['push']!;
-      _majProjets   = _initialBools['maj']!;
+      _roleCtrl.text = _initialText['role']!;
+      _emailNotif = _initialBools['email']!;
+      _pushNotif = _initialBools['push']!;
+      _majProjets = _initialBools['maj']!;
       _commentaires = _initialBools['comm']!;
       _tachesDemain = _initialBools['taches']!;
       _congesEquipe = _initialBools['conges']!;
-      _reunions     = _initialBools['reunions']!;
-      _hasChanges   = false;
+      _reunions = _initialBools['reunions']!;
+      _hasChanges = false;
     });
   }
 
   @override
   void dispose() {
     for (final ctrl in [
-      _prenomCtrl, _nomCtrl, _emailCtrl,
-      _telCtrl, _entrepriseCtrl, _roleCtrl
+      _prenomCtrl,
+      _nomCtrl,
+      _emailCtrl,
+      _telCtrl,
+      _entrepriseCtrl,
+      _roleCtrl,
     ]) {
       ctrl.removeListener(_checkChanges);
       ctrl.dispose();
@@ -119,19 +127,19 @@ class _ParametresScreenState extends State<ParametresScreen> {
 
   void _save() {
     // Mettre à jour les valeurs initiales
-    _initialText['prenom']     = _prenomCtrl.text;
-    _initialText['nom']        = _nomCtrl.text;
-    _initialText['email']      = _emailCtrl.text;
-    _initialText['tel']        = _telCtrl.text;
+    _initialText['prenom'] = _prenomCtrl.text;
+    _initialText['nom'] = _nomCtrl.text;
+    _initialText['email'] = _emailCtrl.text;
+    _initialText['tel'] = _telCtrl.text;
     _initialText['entreprise'] = _entrepriseCtrl.text;
-    _initialText['role']       = _roleCtrl.text;
-    _initialBools['email']     = _emailNotif;
-    _initialBools['push']      = _pushNotif;
-    _initialBools['maj']       = _majProjets;
-    _initialBools['comm']      = _commentaires;
-    _initialBools['taches']    = _tachesDemain;
-    _initialBools['conges']    = _congesEquipe;
-    _initialBools['reunions']  = _reunions;
+    _initialText['role'] = _roleCtrl.text;
+    _initialBools['email'] = _emailNotif;
+    _initialBools['push'] = _pushNotif;
+    _initialBools['maj'] = _majProjets;
+    _initialBools['comm'] = _commentaires;
+    _initialBools['taches'] = _tachesDemain;
+    _initialBools['conges'] = _congesEquipe;
+    _initialBools['reunions'] = _reunions;
     setState(() => _hasChanges = false);
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -169,23 +177,29 @@ class _ParametresScreenState extends State<ParametresScreen> {
                           color: kAccent.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.settings_rounded,
-                            color: kAccent, size: 24),
+                        child: const Icon(
+                          Icons.settings_rounded,
+                          color: kAccent,
+                          size: 24,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Paramètres',
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w800,
-                                    color: kTextMain)),
                             Text(
-                                'Configurez votre profil et vos préférences',
-                                style: TextStyle(
-                                    color: kTextSub, fontSize: 12)),
+                              'Paramètres',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w800,
+                                color: kTextMain,
+                              ),
+                            ),
+                            Text(
+                              'Configurez votre profil et vos préférences',
+                              style: TextStyle(color: kTextSub, fontSize: 12),
+                            ),
                           ],
                         ),
                       ),
@@ -195,71 +209,113 @@ class _ParametresScreenState extends State<ParametresScreen> {
                   const SizedBox(height: 28),
 
                   // ── Deux colonnes desktop / colonne mobile ─────────────
-                  LayoutBuilder(builder: (context, constraints) {
-                    if (constraints.maxWidth > 700) {
-                      return IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: _ProfilCard(
-                              prenomCtrl: _prenomCtrl,
-                              nomCtrl: _nomCtrl,
-                              emailCtrl: _emailCtrl,
-                              telCtrl: _telCtrl,
-                              entrepriseCtrl: _entrepriseCtrl,
-                              roleCtrl: _roleCtrl,
-                            )),
-                            const SizedBox(width: 20),
-                            Expanded(child: _NotifCard(
-                              emailNotif: _emailNotif,
-                              pushNotif: _pushNotif,
-                              majProjets: _majProjets,
-                              commentaires: _commentaires,
-                              tachesDemain: _tachesDemain,
-                              congesEquipe: _congesEquipe,
-                              reunions: _reunions,
-                              onEmailChanged: (v) { setState(() => _emailNotif = v);   _checkChanges(); },
-                              onPushChanged: (v) { setState(() => _pushNotif = v);    _checkChanges(); },
-                              onMajChanged: (v) { setState(() => _majProjets = v);   _checkChanges(); },
-                              onCommChanged: (v) { setState(() => _commentaires = v); _checkChanges(); },
-                              onTachesChanged: (v) { setState(() => _tachesDemain = v); _checkChanges(); },
-                              onCongesChanged: (v) { setState(() => _congesEquipe = v); _checkChanges(); },
-                              onReunionsChanged: (v) { setState(() => _reunions = v);   _checkChanges(); },
-                            )),
-                          ],
-                        ),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth > 700) {
+                        return IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: _ProfilCard(
+                                  prenomCtrl: _prenomCtrl,
+                                  nomCtrl: _nomCtrl,
+                                  emailCtrl: _emailCtrl,
+                                  telCtrl: _telCtrl,
+                                  entrepriseCtrl: _entrepriseCtrl,
+                                  roleCtrl: _roleCtrl,
+                                ),
+                              ),
+                              const SizedBox(width: 20),
+                              Expanded(
+                                child: _NotifCard(
+                                  emailNotif: _emailNotif,
+                                  pushNotif: _pushNotif,
+                                  majProjets: _majProjets,
+                                  commentaires: _commentaires,
+                                  tachesDemain: _tachesDemain,
+                                  congesEquipe: _congesEquipe,
+                                  reunions: _reunions,
+                                  onEmailChanged: (v) {
+                                    setState(() => _emailNotif = v);
+                                    _checkChanges();
+                                  },
+                                  onPushChanged: (v) {
+                                    setState(() => _pushNotif = v);
+                                    _checkChanges();
+                                  },
+                                  onMajChanged: (v) {
+                                    setState(() => _majProjets = v);
+                                    _checkChanges();
+                                  },
+                                  onCommChanged: (v) {
+                                    setState(() => _commentaires = v);
+                                    _checkChanges();
+                                  },
+                                  onTachesChanged: (v) {
+                                    setState(() => _tachesDemain = v);
+                                    _checkChanges();
+                                  },
+                                  onCongesChanged: (v) {
+                                    setState(() => _congesEquipe = v);
+                                    _checkChanges();
+                                  },
+                                  onReunionsChanged: (v) {
+                                    setState(() => _reunions = v);
+                                    _checkChanges();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      return Column(
+                        children: [
+                          _ProfilCard(
+                            prenomCtrl: _prenomCtrl,
+                            nomCtrl: _nomCtrl,
+                            emailCtrl: _emailCtrl,
+                            telCtrl: _telCtrl,
+                            entrepriseCtrl: _entrepriseCtrl,
+                            roleCtrl: _roleCtrl,
+                          ),
+                          const SizedBox(height: 16),
+                          _NotifCard(
+                            emailNotif: _emailNotif,
+                            pushNotif: _pushNotif,
+                            majProjets: _majProjets,
+                            commentaires: _commentaires,
+                            tachesDemain: _tachesDemain,
+                            congesEquipe: _congesEquipe,
+                            reunions: _reunions,
+                            onEmailChanged: (v) =>
+                                setState(() => _emailNotif = v),
+                            onPushChanged: (v) =>
+                                setState(() => _pushNotif = v),
+                            onMajChanged: (v) =>
+                                setState(() => _majProjets = v),
+                            onCommChanged: (v) {
+                              setState(() => _commentaires = v);
+                              _checkChanges();
+                            },
+                            onTachesChanged: (v) {
+                              setState(() => _tachesDemain = v);
+                              _checkChanges();
+                            },
+                            onCongesChanged: (v) {
+                              setState(() => _congesEquipe = v);
+                              _checkChanges();
+                            },
+                            onReunionsChanged: (v) {
+                              setState(() => _reunions = v);
+                              _checkChanges();
+                            },
+                          ),
+                        ],
                       );
-                    }
-                    return Column(
-                      children: [
-                        _ProfilCard(
-                          prenomCtrl: _prenomCtrl,
-                          nomCtrl: _nomCtrl,
-                          emailCtrl: _emailCtrl,
-                          telCtrl: _telCtrl,
-                          entrepriseCtrl: _entrepriseCtrl,
-                          roleCtrl: _roleCtrl,
-                        ),
-                        const SizedBox(height: 16),
-                        _NotifCard(
-                          emailNotif: _emailNotif,
-                          pushNotif: _pushNotif,
-                          majProjets: _majProjets,
-                          commentaires: _commentaires,
-                          tachesDemain: _tachesDemain,
-                          congesEquipe: _congesEquipe,
-                          reunions: _reunions,
-                          onEmailChanged: (v) => setState(() => _emailNotif = v),
-                          onPushChanged: (v) => setState(() => _pushNotif = v),
-                          onMajChanged: (v) => setState(() => _majProjets = v),
-                          onCommChanged: (v) { setState(() => _commentaires = v); _checkChanges(); },
-                          onTachesChanged: (v) { setState(() => _tachesDemain = v); _checkChanges(); },
-                          onCongesChanged: (v) { setState(() => _congesEquipe = v); _checkChanges(); },
-                          onReunionsChanged: (v) { setState(() => _reunions = v); _checkChanges(); },
-                        ),
-                      ],
-                    );
-                  }),
+                    },
+                  ),
                 ],
               ),
             ),
@@ -284,21 +340,28 @@ class _ParametresScreenState extends State<ParametresScreen> {
                             width: double.infinity,
                             child: ElevatedButton.icon(
                               onPressed: _save,
-                              icon: const Icon(LucideIcons.save,
-                                  size: 15, color: Colors.white),
+                              icon: const Icon(
+                                LucideIcons.save,
+                                size: 15,
+                                color: Colors.white,
+                              ),
                               label: const Text(
                                 'Enregistrer les modifications',
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: kAccent,
                                 elevation: 0,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
@@ -308,14 +371,20 @@ class _ParametresScreenState extends State<ParametresScreen> {
                             child: OutlinedButton(
                               onPressed: _cancel,
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                side: const BorderSide(color: Color(0xFFD1D5DB)),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                side: const BorderSide(
+                                  color: Color(0xFFD1D5DB),
+                                ),
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
-                              child: const Text('Annuler',
-                                  style: TextStyle(
-                                      color: kTextSub, fontSize: 14)),
+                              child: const Text(
+                                'Annuler',
+                                style: TextStyle(color: kTextSub, fontSize: 14),
+                              ),
                             ),
                           ),
                         ],
@@ -327,30 +396,44 @@ class _ParametresScreenState extends State<ParametresScreen> {
                             onPressed: _cancel,
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 12),
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
                               side: const BorderSide(color: Color(0xFFD1D5DB)),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
-                            child: const Text('Annuler',
-                                style: TextStyle(color: kTextSub)),
+                            child: const Text(
+                              'Annuler',
+                              style: TextStyle(color: kTextSub),
+                            ),
                           ),
                           const SizedBox(width: 12),
                           ElevatedButton.icon(
                             onPressed: _save,
-                            icon: const Icon(LucideIcons.save,
-                                size: 15, color: Colors.white),
-                            label: const Text('Enregistrer les modifications',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600)),
+                            icon: const Icon(
+                              LucideIcons.save,
+                              size: 15,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              'Enregistrer les modifications',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: kAccent,
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 12),
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ],
@@ -392,11 +475,14 @@ class _ProfilCard extends StatelessWidget {
             children: const [
               Icon(LucideIcons.user, color: kTextSub, size: 18),
               SizedBox(width: 10),
-              Text('Informations du profil',
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: kTextMain)),
+              Text(
+                'Informations du profil',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: kTextMain,
+                ),
+              ),
             ],
           ),
 
@@ -507,11 +593,14 @@ class _NotifCard extends StatelessWidget {
             children: const [
               Icon(LucideIcons.bell, color: kTextSub, size: 18),
               SizedBox(width: 10),
-              Text('Contrôle des notifications',
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: kTextMain)),
+              Text(
+                'Contrôle des notifications',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: kTextMain,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -530,7 +619,8 @@ class _NotifCard extends StatelessWidget {
             icon: LucideIcons.mail,
             iconColor: kAccent,
             title: 'Notifications par Email',
-            subtitle: 'Recevez un récapitulatif et des alertes importantes sur votre boîte mail.',
+            subtitle:
+                'Recevez un récapitulatif et des alertes importantes sur votre boîte mail.',
             value: emailNotif,
             onChanged: onEmailChanged,
           ),
@@ -539,7 +629,8 @@ class _NotifCard extends StatelessWidget {
             icon: LucideIcons.smartphone,
             iconColor: kAccent,
             title: 'Notifications Push / In-App',
-            subtitle: 'Alertes instantanées directement sur votre tableau de bord et mobile.',
+            subtitle:
+                'Alertes instantanées directement sur votre tableau de bord et mobile.',
             value: pushNotif,
             onChanged: onPushChanged,
           ),
@@ -636,11 +727,14 @@ class _Field extends StatelessWidget {
           children: [
             Icon(icon, size: 13, color: kTextSub),
             const SizedBox(width: 6),
-            Text(label,
-                style: const TextStyle(
-                    color: kTextSub,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: const TextStyle(
+                color: kTextSub,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 7),
@@ -648,11 +742,16 @@ class _Field extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           style: const TextStyle(
-              color: kTextMain, fontSize: 14, fontWeight: FontWeight.w500),
+            color: kTextMain,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14, vertical: 13),
+              horizontal: 14,
+              vertical: 13,
+            ),
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -683,10 +782,11 @@ class _SectionLabel extends StatelessWidget {
     return Text(
       label,
       style: const TextStyle(
-          color: kTextSub,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.8),
+        color: kTextSub,
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.8,
+      ),
     );
   }
 }
@@ -725,23 +825,23 @@ class _ToggleCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                        color: kTextMain)),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    color: kTextMain,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(subtitle,
-                    style: const TextStyle(
-                        color: kTextSub, fontSize: 11)),
+                Text(
+                  subtitle,
+                  style: const TextStyle(color: kTextSub, fontSize: 11),
+                ),
               ],
             ),
           ),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeColor: kAccent,
-          ),
+          Switch(value: value, onChanged: onChanged, activeColor: kAccent),
         ],
       ),
     );
@@ -774,9 +874,10 @@ class _ToggleRow extends StatelessWidget {
               Icon(icon, size: 16, color: kTextSub),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(label,
-                    style: const TextStyle(
-                        color: kTextMain, fontSize: 13)),
+                child: Text(
+                  label,
+                  style: const TextStyle(color: kTextMain, fontSize: 13),
+                ),
               ),
               Switch(
                 value: value,
@@ -787,8 +888,7 @@ class _ToggleRow extends StatelessWidget {
             ],
           ),
         ),
-        if (!isLast)
-          const Divider(height: 1, color: Color(0xFFF3F4F6)),
+        if (!isLast) const Divider(height: 1, color: Color(0xFFF3F4F6)),
       ],
     );
   }

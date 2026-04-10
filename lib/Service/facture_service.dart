@@ -26,28 +26,23 @@ class FactureService {
         .eq('projet_id', projetId)
         .order('created_at', ascending: true);
 
-    return (response as List)
-        .map((json) => Facture.fromJson(json))
-        .toList();
+    return (response as List).map((json) => Facture.fromJson(json)).toList();
   }
 
   // ── Ajouter une facture ────────────────────────────────────────────────────
   static Future<void> addFacture(Facture facture) async {
     await _db.from('factures').insert({
-      'projet_id':     facture.projetId,
-      'numero':        facture.numero,
-      'montant':       facture.montant,
-      'statut':        facture.statut,
+      'projet_id': facture.projetId,
+      'numero': facture.numero,
+      'montant': facture.montant,
+      'statut': facture.statut,
       'date_echeance': facture.dateEcheance,
     });
   }
 
   // ── Mettre à jour le statut d'une facture ──────────────────────────────────
   static Future<void> updateStatut(String id, String statut) async {
-    await _db
-        .from('factures')
-        .update({'statut': statut})
-        .eq('id', id);
+    await _db.from('factures').update({'statut': statut}).eq('id', id);
   }
 
   // ── Supprimer une facture ──────────────────────────────────────────────────

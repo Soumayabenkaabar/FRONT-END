@@ -4,62 +4,44 @@ import '../widgets/auth_widgets.dart';
 class SignupScreen extends StatelessWidget {
   final String backgroundImage;
 
-  const SignupScreen({
-    this.backgroundImage = "assets/images/arr2.jpg",
-  });
+  const SignupScreen({this.backgroundImage = "assets/images/arr2.jpg"});
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     bool isDesktop = width > 800;
 
-    return Scaffold(
-      body: isDesktop ? _desktop(context) : _mobile(context),
-    );
+    return Scaffold(body: isDesktop ? _desktop(context) : _mobile(context));
   }
 
-Widget _desktop(BuildContext context) {
-  return Stack(
-    children: [
+  Widget _desktop(BuildContext context) {
+    return Stack(
+      children: [
+        /// 🔥 IMAGE FULL
+        Positioned.fill(child: Image.asset(backgroundImage, fit: BoxFit.cover)),
 
-      /// 🔥 IMAGE FULL
-      Positioned.fill(
-        child: Image.asset(
-          backgroundImage,
-          fit: BoxFit.cover,
-        ),
-      ),
+        /// 🔥 OVERLAY
+        Positioned.fill(child: Container(color: Colors.black.withOpacity(0.4))),
 
-      /// 🔥 OVERLAY
-      Positioned.fill(
-        child: Container(
-          color: Colors.black.withOpacity(0.4),
-        ),
-      ),
-
-      /// 🔥 FORM CENTER
-      Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 450), // 🔥 IMPORTANT
-            child: signupForm(context, isMobile: true),
+        /// 🔥 FORM CENTER
+        Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 450), // 🔥 IMPORTANT
+              child: signupForm(context, isMobile: true),
+            ),
           ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
   Widget _mobile(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(
-          child: Image.asset(backgroundImage, fit: BoxFit.cover),
-        ),
-        Positioned.fill(
-          child: Container(color: Colors.black.withOpacity(0.6)),
-        ),
+        Positioned.fill(child: Image.asset(backgroundImage, fit: BoxFit.cover)),
+        Positioned.fill(child: Container(color: Colors.black.withOpacity(0.6))),
         Center(
           child: Padding(
             padding: EdgeInsets.all(20),
@@ -84,10 +66,7 @@ Widget _desktop(BuildContext context) {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 20,
-          )
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20),
         ],
       ),
       child: content,
@@ -139,8 +118,10 @@ Widget _desktop(BuildContext context) {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text("Already have an account?",
-              style: TextStyle(color: textColor)),
+          child: Text(
+            "Already have an account?",
+            style: TextStyle(color: textColor),
+          ),
         ),
       ],
     );

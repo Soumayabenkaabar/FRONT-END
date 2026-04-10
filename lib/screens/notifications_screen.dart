@@ -50,9 +50,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final pad = isMobile ? 16.0 : 28.0;
 
     final nonLues = _notifications.where((n) => !n.lue).toList();
-    final lues    = _notifications.where((n) => n.lue).toList();
-    final nbBudget = _notifications.where((n) => n.type == NotifType.budget && !n.lue).length;
-    final nbRetard = _notifications.where((n) => n.type == NotifType.retard && !n.lue).length;
+    final lues = _notifications.where((n) => n.lue).toList();
+    final nbBudget = _notifications
+        .where((n) => n.type == NotifType.budget && !n.lue)
+        .length;
+    final nbRetard = _notifications
+        .where((n) => n.type == NotifType.retard && !n.lue)
+        .length;
 
     return Container(
       color: kBg,
@@ -69,14 +73,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Centre de notifications',
-                          style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w800,
-                              color: kTextMain)),
+                      Text(
+                        'Centre de notifications',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          color: kTextMain,
+                        ),
+                      ),
                       SizedBox(height: 4),
-                      Text('Restez informé des alertes et activités importantes',
-                          style: TextStyle(color: kTextSub, fontSize: 13)),
+                      Text(
+                        'Restez informé des alertes et activités importantes',
+                        style: TextStyle(color: kTextSub, fontSize: 13),
+                      ),
                     ],
                   ),
                 ),
@@ -84,22 +93,28 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 if (nonLues.isNotEmpty)
                   OutlinedButton.icon(
                     onPressed: _markAllRead,
-                    icon: const Icon(LucideIcons.checkCircle,
-                        size: 14, color: kAccent),
+                    icon: const Icon(
+                      LucideIcons.checkCircle,
+                      size: 14,
+                      color: kAccent,
+                    ),
                     label: Text(
                       isMobile ? 'Tout lu' : 'Tout marquer comme lu',
                       style: const TextStyle(
-                          color: kAccent,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600),
+                        color: kAccent,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(
-                          horizontal: isMobile ? 10 : 14,
-                          vertical: isMobile ? 8 : 10),
+                        horizontal: isMobile ? 10 : 14,
+                        vertical: isMobile ? 8 : 10,
+                      ),
                       side: const BorderSide(color: kAccent),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
               ],
@@ -151,25 +166,29 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             if (nonLues.isNotEmpty) ...[
               Row(
                 children: const [
-                  Icon(Icons.warning_amber_rounded,
-                      color: kRed, size: 20),
+                  Icon(Icons.warning_amber_rounded, color: kRed, size: 20),
                   SizedBox(width: 8),
-                  Text('Notifications non lues',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: kTextMain)),
+                  Text(
+                    'Notifications non lues',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: kTextMain,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 14),
-              ...nonLues.map((n) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _NotifCard(
-                      notif: n,
-                      onMarkRead: () => _markRead(n.id),
-                      onDelete: () => _delete(n.id),
-                    ),
-                  )),
+              ...nonLues.map(
+                (n) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _NotifCard(
+                    notif: n,
+                    onMarkRead: () => _markRead(n.id),
+                    onDelete: () => _delete(n.id),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
             ],
 
@@ -177,25 +196,33 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             if (lues.isNotEmpty) ...[
               Row(
                 children: const [
-                  Icon(Icons.check_circle_outline_rounded,
-                      color: kTextSub, size: 20),
+                  Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: kTextSub,
+                    size: 20,
+                  ),
                   SizedBox(width: 8),
-                  Text('Notifications lues',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: kTextMain)),
+                  Text(
+                    'Notifications lues',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: kTextMain,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 14),
-              ...lues.map((n) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _NotifCard(
-                      notif: n,
-                      onMarkRead: null,
-                      onDelete: () => _delete(n.id),
-                    ),
-                  )),
+              ...lues.map(
+                (n) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _NotifCard(
+                    notif: n,
+                    onMarkRead: null,
+                    onDelete: () => _delete(n.id),
+                  ),
+                ),
+              ),
             ],
 
             // ── Vide ─────────────────────────────────────────────────────
@@ -205,14 +232,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 60),
                   child: Column(
                     children: const [
-                      Icon(LucideIcons.bellOff,
-                          size: 48, color: kTextSub),
+                      Icon(LucideIcons.bellOff, size: 48, color: kTextSub),
                       SizedBox(height: 12),
-                      Text('Aucune notification',
-                          style: TextStyle(
-                              color: kTextSub,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600)),
+                      Text(
+                        'Aucune notification',
+                        style: TextStyle(
+                          color: kTextSub,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -251,9 +280,10 @@ class _StatCard extends StatelessWidget {
         border: Border(left: BorderSide(color: borderColor, width: 3)),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2)),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -264,22 +294,28 @@ class _StatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Text(label,
-                    style: TextStyle(
-                        color: kTextSub,
-                        fontSize: isMobile ? 11 : 13,
-                        fontWeight: FontWeight.w500),
-                    overflow: TextOverflow.ellipsis),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: kTextSub,
+                    fontSize: isMobile ? 11 : 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               Icon(icon, color: iconColor, size: isMobile ? 16 : 20),
             ],
           ),
           SizedBox(height: isMobile ? 8 : 10),
-          Text(value,
-              style: TextStyle(
-                  fontSize: isMobile ? 22 : 28,
-                  fontWeight: FontWeight.w800,
-                  color: kTextMain)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: isMobile ? 22 : 28,
+              fontWeight: FontWeight.w800,
+              color: kTextMain,
+            ),
+          ),
         ],
       ),
     );
@@ -314,9 +350,10 @@ class _NotifCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(isLue ? 0.02 : 0.05),
-              blurRadius: 6,
-              offset: const Offset(0, 2)),
+            color: Colors.black.withOpacity(isLue ? 0.02 : 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Padding(
@@ -332,11 +369,13 @@ class _NotifCard extends StatelessWidget {
                 color: notif.typeColor.withOpacity(isLue ? 0.08 : 0.12),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(notif.typeIcon,
-                  color: isLue
-                      ? notif.typeColor.withOpacity(0.5)
-                      : notif.typeColor,
-                  size: 18),
+              child: Icon(
+                notif.typeIcon,
+                color: isLue
+                    ? notif.typeColor.withOpacity(0.5)
+                    : notif.typeColor,
+                size: 18,
+              ),
             ),
             const SizedBox(width: 14),
 
@@ -348,20 +387,22 @@ class _NotifCard extends StatelessWidget {
                   // Badge type
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 3),
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: notif.typeColor
-                          .withOpacity(isLue ? 0.08 : 0.15),
+                      color: notif.typeColor.withOpacity(isLue ? 0.08 : 0.15),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       notif.typeLabel,
                       style: TextStyle(
-                          color: isLue
-                              ? notif.typeColor.withOpacity(0.6)
-                              : notif.typeColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700),
+                        color: isLue
+                            ? notif.typeColor.withOpacity(0.6)
+                            : notif.typeColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -372,9 +413,7 @@ class _NotifCard extends StatelessWidget {
                     style: TextStyle(
                       color: isLue ? kTextSub : kTextMain,
                       fontSize: 13,
-                      fontWeight: isLue
-                          ? FontWeight.w400
-                          : FontWeight.w500,
+                      fontWeight: isLue ? FontWeight.w400 : FontWeight.w500,
                       height: 1.4,
                     ),
                   ),
@@ -384,27 +423,29 @@ class _NotifCard extends StatelessWidget {
                   Text(
                     '— ${notif.projet}',
                     style: TextStyle(
-                        color: isLue
-                            ? kTextSub
-                            : kAccent,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500),
+                      color: isLue ? kTextSub : kAccent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(height: 6),
 
                   // Date · Heure
                   Row(
                     children: [
-                      Text(notif.date,
-                          style: const TextStyle(
-                              color: kTextSub, fontSize: 11)),
+                      Text(
+                        notif.date,
+                        style: const TextStyle(color: kTextSub, fontSize: 11),
+                      ),
                       if (notif.heure.isNotEmpty) ...[
-                        const Text(' • ',
-                            style: TextStyle(
-                                color: kTextSub, fontSize: 11)),
-                        Text(notif.heure,
-                            style: const TextStyle(
-                                color: kTextSub, fontSize: 11)),
+                        const Text(
+                          ' • ',
+                          style: TextStyle(color: kTextSub, fontSize: 11),
+                        ),
+                        Text(
+                          notif.heure,
+                          style: const TextStyle(color: kTextSub, fontSize: 11),
+                        ),
                       ],
                     ],
                   ),
@@ -430,9 +471,10 @@ class _NotifCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(
-                            Icons.check_circle_outline_rounded,
-                            size: 18,
-                            color: kTextSub),
+                          Icons.check_circle_outline_rounded,
+                          size: 18,
+                          color: kTextSub,
+                        ),
                       ),
                     ),
                   ),
@@ -449,8 +491,11 @@ class _NotifCard extends StatelessWidget {
                         color: kBg,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Icon(Icons.delete_outline_rounded,
-                          size: 18, color: kRed),
+                      child: const Icon(
+                        Icons.delete_outline_rounded,
+                        size: 18,
+                        color: kRed,
+                      ),
                     ),
                   ),
                 ),

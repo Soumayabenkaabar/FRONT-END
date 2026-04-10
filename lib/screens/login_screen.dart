@@ -12,23 +12,28 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  final _formKey      = GlobalKey<FormState>();
-  final _emailCtrl    = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
-  bool _obscure       = true;
-  bool _loading       = false;
+  bool _obscure = true;
+  bool _loading = false;
   String? _errorMsg;
   late AnimationController _anim;
-  late Animation<double>   _fadeAnim;
-  late Animation<Offset>   _slideAnim;
+  late Animation<double> _fadeAnim;
+  late Animation<Offset> _slideAnim;
 
   @override
   void initState() {
     super.initState();
-    _anim = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-    _fadeAnim  = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
-    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _anim, curve: Curves.easeOut));
+    _anim = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fadeAnim = CurvedAnimation(parent: _anim, curve: Curves.easeOut);
+    _slideAnim = Tween<Offset>(
+      begin: const Offset(0, 0.06),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOut));
     _anim.forward();
   }
 
@@ -42,10 +47,13 @@ class _LoginScreenState extends State<LoginScreen>
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() { _loading = true; _errorMsg = null; });
+    setState(() {
+      _loading = true;
+      _errorMsg = null;
+    });
 
     final result = await AuthService.login(
-      email:    _emailCtrl.text,
+      email: _emailCtrl.text,
       password: _passwordCtrl.text,
     );
 
@@ -86,13 +94,21 @@ class _LoginScreenState extends State<LoginScreen>
                     const Spacer(),
                     const Text(
                       'Gérez vos projets\nd\'architecture.',
-                      style: TextStyle(fontSize: 36, fontWeight: FontWeight.w700,
-                          color: Colors.white, height: 1.2),
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        height: 1.2,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     const Text(
                       'Équipes, clients, finances et documents —\ntout dans un seul espace.',
-                      style: TextStyle(fontSize: 15, color: Color(0xFF94A3B8), height: 1.6),
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF94A3B8),
+                        height: 1.6,
+                      ),
                     ),
                     const SizedBox(height: 48),
                     const _StatRow(),
@@ -111,14 +127,20 @@ class _LoginScreenState extends State<LoginScreen>
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
               child: _FormContent(
-                fadeAnim: _fadeAnim, slideAnim: _slideAnim,
-                formKey: _formKey, emailCtrl: _emailCtrl,
-                passwordCtrl: _passwordCtrl, obscure: _obscure,
-                loading: _loading, errorMsg: _errorMsg,
+                fadeAnim: _fadeAnim,
+                slideAnim: _slideAnim,
+                formKey: _formKey,
+                emailCtrl: _emailCtrl,
+                passwordCtrl: _passwordCtrl,
+                obscure: _obscure,
+                loading: _loading,
+                errorMsg: _errorMsg,
                 onToggleObscure: () => setState(() => _obscure = !_obscure),
                 onSubmit: _submit,
                 onRegister: () => Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => const RegisterScreen())),
+                  context,
+                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                ),
               ),
             ),
           ),
@@ -142,8 +164,12 @@ class _LoginScreenState extends State<LoginScreen>
                 SizedBox(height: 24),
                 Text(
                   'Gérez vos projets\nd\'architecture.',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700,
-                      color: Colors.white, height: 1.2),
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    height: 1.2,
+                  ),
                 ),
               ],
             ),
@@ -151,14 +177,20 @@ class _LoginScreenState extends State<LoginScreen>
           Padding(
             padding: const EdgeInsets.all(24),
             child: _FormContent(
-              fadeAnim: _fadeAnim, slideAnim: _slideAnim,
-              formKey: _formKey, emailCtrl: _emailCtrl,
-              passwordCtrl: _passwordCtrl, obscure: _obscure,
-              loading: _loading, errorMsg: _errorMsg,
+              fadeAnim: _fadeAnim,
+              slideAnim: _slideAnim,
+              formKey: _formKey,
+              emailCtrl: _emailCtrl,
+              passwordCtrl: _passwordCtrl,
+              obscure: _obscure,
+              loading: _loading,
+              errorMsg: _errorMsg,
               onToggleObscure: () => setState(() => _obscure = !_obscure),
               onSubmit: _submit,
               onRegister: () => Navigator.push(
-                context, MaterialPageRoute(builder: (_) => const RegisterScreen())),
+                context,
+                MaterialPageRoute(builder: (_) => const RegisterScreen()),
+              ),
             ),
           ),
         ],
@@ -169,8 +201,8 @@ class _LoginScreenState extends State<LoginScreen>
 
 // ── Form content ───────────────────────────────────────────────────────────────
 class _FormContent extends StatelessWidget {
-  final Animation<double>    fadeAnim;
-  final Animation<Offset>    slideAnim;
+  final Animation<double> fadeAnim;
+  final Animation<Offset> slideAnim;
   final GlobalKey<FormState> formKey;
   final TextEditingController emailCtrl, passwordCtrl;
   final bool obscure, loading;
@@ -178,11 +210,16 @@ class _FormContent extends StatelessWidget {
   final VoidCallback onToggleObscure, onSubmit, onRegister;
 
   const _FormContent({
-    required this.fadeAnim,    required this.slideAnim,
-    required this.formKey,     required this.emailCtrl,
-    required this.passwordCtrl,required this.obscure,
-    required this.loading,     required this.errorMsg,
-    required this.onToggleObscure, required this.onSubmit,
+    required this.fadeAnim,
+    required this.slideAnim,
+    required this.formKey,
+    required this.emailCtrl,
+    required this.passwordCtrl,
+    required this.obscure,
+    required this.loading,
+    required this.errorMsg,
+    required this.onToggleObscure,
+    required this.onSubmit,
     required this.onRegister,
   });
 
@@ -196,11 +233,19 @@ class _FormContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Connexion',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700, color: kTextMain)),
+            const Text(
+              'Connexion',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w700,
+                color: kTextMain,
+              ),
+            ),
             const SizedBox(height: 6),
-            const Text('Accédez à votre espace architecte',
-                style: TextStyle(fontSize: 14, color: kTextSub)),
+            const Text(
+              'Accédez à votre espace architecte',
+              style: TextStyle(fontSize: 14, color: kTextSub),
+            ),
             const SizedBox(height: 32),
 
             if (errorMsg != null) ...[
@@ -209,7 +254,8 @@ class _FormContent extends StatelessWidget {
             ],
 
             _AuthField(
-              label: 'Adresse e-mail', controller: emailCtrl,
+              label: 'Adresse e-mail',
+              controller: emailCtrl,
               keyboardType: TextInputType.emailAddress,
               prefixIcon: LucideIcons.mail,
               validator: (v) {
@@ -220,8 +266,10 @@ class _FormContent extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _AuthField(
-              label: 'Mot de passe', controller: passwordCtrl,
-              obscureText: obscure, prefixIcon: LucideIcons.lock,
+              label: 'Mot de passe',
+              controller: passwordCtrl,
+              obscureText: obscure,
+              prefixIcon: LucideIcons.lock,
               suffixIcon: obscure ? LucideIcons.eyeOff : LucideIcons.eye,
               onSuffixTap: onToggleObscure,
               validator: (v) {
@@ -233,21 +281,37 @@ class _FormContent extends StatelessWidget {
             const SizedBox(height: 28),
 
             SizedBox(
-              width: double.infinity, height: 50,
+              width: double.infinity,
+              height: 50,
               child: ElevatedButton(
                 onPressed: loading ? null : onSubmit,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0F172A),
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: const Color(0xFF0F172A).withOpacity(0.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  disabledBackgroundColor: const Color(
+                    0xFF0F172A,
+                  ).withOpacity(0.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
                 child: loading
-                    ? const SizedBox(width: 20, height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Se connecter',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Se connecter',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 24),
@@ -255,17 +319,23 @@ class _FormContent extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Pas encore de compte ?',
-                    style: TextStyle(color: kTextSub, fontSize: 14)),
+                const Text(
+                  'Pas encore de compte ?',
+                  style: TextStyle(color: kTextSub, fontSize: 14),
+                ),
                 const SizedBox(width: 4),
                 GestureDetector(
                   onTap: onRegister,
-                  child: const Text('S\'inscrire',
-                      style: TextStyle(
-                        color: kAccent, fontSize: 14, fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                        decorationColor: kAccent,
-                      )),
+                  child: const Text(
+                    'S\'inscrire',
+                    style: TextStyle(
+                      color: kAccent,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                      decorationColor: kAccent,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -288,36 +358,54 @@ class _AuthField extends StatelessWidget {
   final String? Function(String?)? validator;
 
   const _AuthField({
-    required this.label, required this.controller,
-    this.keyboardType,   this.obscureText = false,
-    required this.prefixIcon, this.suffixIcon,
-    this.onSuffixTap,    this.validator,
+    required this.label,
+    required this.controller,
+    this.keyboardType,
+    this.obscureText = false,
+    required this.prefixIcon,
+    this.suffixIcon,
+    this.onSuffixTap,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: const TextStyle(
-          fontSize: 13, fontWeight: FontWeight.w500, color: kTextMain)),
+      Text(
+        label,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+          color: kTextMain,
+        ),
+      ),
       const SizedBox(height: 6),
       TextFormField(
-        controller: controller, obscureText: obscureText,
-        keyboardType: keyboardType, validator: validator,
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        validator: validator,
         style: const TextStyle(fontSize: 14, color: kTextMain),
         decoration: InputDecoration(
           prefixIcon: Icon(prefixIcon, size: 16, color: kTextSub),
           suffixIcon: suffixIcon != null
-              ? GestureDetector(onTap: onSuffixTap,
-                  child: Icon(suffixIcon, size: 16, color: kTextSub))
+              ? GestureDetector(
+                  onTap: onSuffixTap,
+                  child: Icon(suffixIcon, size: 16, color: kTextSub),
+                )
               : null,
-          filled: true, fillColor: kCardBg,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          border:              _border(const Color(0xFFE5E7EB)),
-          enabledBorder:       _border(const Color(0xFFE5E7EB)),
-          focusedBorder:       _border(kAccent, width: 1.5),
-          errorBorder:         _border(const Color(0xFFEF4444)),
-          focusedErrorBorder:  _border(const Color(0xFFEF4444), width: 1.5),
+          filled: true,
+          fillColor: kCardBg,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 14,
+          ),
+          border: _border(const Color(0xFFE5E7EB)),
+          enabledBorder: _border(const Color(0xFFE5E7EB)),
+          focusedBorder: _border(kAccent, width: 1.5),
+          errorBorder: _border(const Color(0xFFEF4444)),
+          focusedErrorBorder: _border(const Color(0xFFEF4444), width: 1.5),
           errorStyle: const TextStyle(fontSize: 12, color: Color(0xFFEF4444)),
         ),
       ),
@@ -347,8 +435,12 @@ class _ErrorBanner extends StatelessWidget {
       children: [
         const Icon(LucideIcons.alertCircle, size: 16, color: Color(0xFFEF4444)),
         const SizedBox(width: 8),
-        Expanded(child: Text(message,
-            style: const TextStyle(fontSize: 13, color: Color(0xFFB91C1C)))),
+        Expanded(
+          child: Text(
+            message,
+            style: const TextStyle(fontSize: 13, color: Color(0xFFB91C1C)),
+          ),
+        ),
       ],
     ),
   );
@@ -362,18 +454,27 @@ class _Logo extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     children: [
       Container(
-        width: 36, height: 36,
+        width: 36,
+        height: 36,
         decoration: BoxDecoration(
           color: dark ? Colors.white : const Color(0xFF0F172A),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(LucideIcons.building2, size: 18,
-            color: dark ? const Color(0xFF0F172A) : Colors.white),
+        child: Icon(
+          LucideIcons.building2,
+          size: 18,
+          color: dark ? const Color(0xFF0F172A) : Colors.white,
+        ),
       ),
       const SizedBox(width: 10),
-      Text('ArchiManager',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700,
-              color: dark ? Colors.white : kTextMain)),
+      Text(
+        'ArchiManager',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: dark ? Colors.white : kTextMain,
+        ),
+      ),
     ],
   );
 }
@@ -388,7 +489,7 @@ class _StatRow extends StatelessWidget {
       SizedBox(width: 32),
       _StatItem(value: '200+', label: 'Architectes'),
       SizedBox(width: 32),
-      _StatItem(value: '98%',  label: 'Satisfaction'),
+      _StatItem(value: '98%', label: 'Satisfaction'),
     ],
   );
 }
@@ -400,9 +501,18 @@ class _StatItem extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(value, style: const TextStyle(
-          fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white)),
-      Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8))),
+      Text(
+        value,
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+        ),
+      ),
+      Text(
+        label,
+        style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+      ),
     ],
   );
 }
@@ -423,6 +533,7 @@ class _GridPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
     }
   }
+
   @override
   bool shouldRepaint(_) => false;
 }

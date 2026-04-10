@@ -41,9 +41,9 @@ class ArchiManagerApp extends StatelessWidget {
       ),
       home: const SplashScreen(),
       routes: {
-        '/login':    (_) => const LoginScreen(),
+        '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
-        '/home':     (_) => const _AppShell(),
+        '/home': (_) => const _AppShell(),
       },
     );
   }
@@ -62,15 +62,24 @@ class _AppShellState extends State<_AppShell> {
 
   Widget _buildPage(int index) {
     switch (index) {
-      case 0:  return const DashboardScreen();
-      case 1:  return const ProjetsScreen();
-      case 2:  return const ClientsScreen();
-      case 3:  return const EquipeScreen();
-      case 4:  return const AnalyticsScreen();
-      case 5:  return const CarteScreen();
-      case 6:  return NotificationsScreen(onNotifChanged: () => setState(() {}));
-      case 7:  return const ParametresScreen();
-      default: return _PlaceholderScreen(label: navItems[index].label);
+      case 0:
+        return const DashboardScreen();
+      case 1:
+        return const ProjetsScreen();
+      case 2:
+        return const ClientsScreen();
+      case 3:
+        return const EquipeScreen();
+      case 4:
+        return const AnalyticsScreen();
+      case 5:
+        return const CarteScreen();
+      case 6:
+        return NotificationsScreen(onNotifChanged: () => setState(() {}));
+      case 7:
+        return const ParametresScreen();
+      default:
+        return _PlaceholderScreen(label: navItems[index].label);
     }
   }
 
@@ -82,7 +91,7 @@ class _AppShellState extends State<_AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    final isWide     = MediaQuery.of(context).size.width >= 800;
+    final isWide = MediaQuery.of(context).size.width >= 800;
     final notifCount = _notifCount;
     final architecte = AuthService.currentUser;
 
@@ -92,10 +101,10 @@ class _AppShellState extends State<_AppShell> {
           children: [
             SidebarWidget(
               selectedIndex: _selectedIndex,
-              onSelect:      (i) => setState(() => _selectedIndex = i),
-              notifCount:    notifCount,
+              onSelect: (i) => setState(() => _selectedIndex = i),
+              notifCount: notifCount,
               architecteNom: architecte?.fullName ?? 'Architecte',
-              onLogout:      _logout,
+              onLogout: _logout,
             ),
             Expanded(child: _buildPage(_selectedIndex)),
           ],
@@ -120,26 +129,44 @@ class _AppShellState extends State<_AppShell> {
           children: [
             Icon(LucideIcons.building2, color: Colors.amber),
             SizedBox(width: 8),
-            Text('ArchiManager', style: TextStyle(color: Colors.white, fontSize: 16)),
+            Text(
+              'ArchiManager',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
           ],
         ),
         actions: [
           Stack(
             children: [
               IconButton(
-                icon: const Icon(LucideIcons.bell, color: Colors.white70, size: 20),
-                onPressed: () => setState(() => _selectedIndex = kNotifNavIndex),
+                icon: const Icon(
+                  LucideIcons.bell,
+                  color: Colors.white70,
+                  size: 20,
+                ),
+                onPressed: () =>
+                    setState(() => _selectedIndex = kNotifNavIndex),
               ),
               if (notifCount > 0)
                 Positioned(
-                  top: 8, right: 8,
+                  top: 8,
+                  right: 8,
                   child: Container(
-                    width: 16, height: 16,
-                    decoration: const BoxDecoration(color: kRed, shape: BoxShape.circle),
+                    width: 16,
+                    height: 16,
+                    decoration: const BoxDecoration(
+                      color: kRed,
+                      shape: BoxShape.circle,
+                    ),
                     child: Center(
-                      child: Text('$notifCount',
-                          style: const TextStyle(color: Colors.white,
-                              fontSize: 9, fontWeight: FontWeight.w700)),
+                      child: Text(
+                        '$notifCount',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -156,9 +183,9 @@ class _AppShellState extends State<_AppShell> {
             setState(() => _selectedIndex = i);
             Navigator.of(context).pop();
           },
-          notifCount:    notifCount,
+          notifCount: notifCount,
           architecteNom: architecte?.fullName ?? 'Architecte',
-          onLogout:      _logout,
+          onLogout: _logout,
         ),
       ),
       body: _buildPage(_selectedIndex),
@@ -177,11 +204,19 @@ class _PlaceholderScreen extends StatelessWidget {
       children: [
         const Icon(LucideIcons.construction, size: 48, color: kTextSub),
         const SizedBox(height: 12),
-        Text(label, style: const TextStyle(
-            fontSize: 22, fontWeight: FontWeight.w700, color: kTextMain)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+            color: kTextMain,
+          ),
+        ),
         const SizedBox(height: 6),
-        const Text('Page en cours de développement',
-            style: TextStyle(color: kTextSub, fontSize: 13)),
+        const Text(
+          'Page en cours de développement',
+          style: TextStyle(color: kTextSub, fontSize: 13),
+        ),
       ],
     ),
   );

@@ -52,9 +52,7 @@ class KpiCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: kCardBg,
         borderRadius: BorderRadius.circular(14),
-        border: Border(
-          left: BorderSide(color: leftBorderColor, width: 3),
-        ),
+        border: Border(left: BorderSide(color: leftBorderColor, width: 3)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -128,8 +126,9 @@ class KpiCard extends StatelessWidget {
                         Text(
                           sub1Text!,
                           style: TextStyle(
-                              color: sub1Color ?? kTextSub,
-                              fontSize: subSize),
+                            color: sub1Color ?? kTextSub,
+                            fontSize: subSize,
+                          ),
                         ),
                     ],
                   ),
@@ -143,8 +142,9 @@ class KpiCard extends StatelessWidget {
                       Text(
                         sub2Text!,
                         style: TextStyle(
-                            color: sub2Color ?? kTextSub,
-                            fontSize: subSize),
+                          color: sub2Color ?? kTextSub,
+                          fontSize: subSize,
+                        ),
                       ),
                     ],
                   ),

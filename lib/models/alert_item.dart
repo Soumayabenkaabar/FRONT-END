@@ -24,7 +24,8 @@ final List<AlertItem> sampleAlerts = [
     icon: Icons.warning_rounded,
     iconColor: kRed,
     bgColor: kRedLight,
-    text: "Dépassement budget de 5% sur 'Élévation des murs' - Villa Moderne Casablanca",
+    text:
+        "Dépassement budget de 5% sur 'Élévation des murs' - Villa Moderne Casablanca",
     textColor: kRed,
     date: '26/03/2026',
   ),
@@ -32,7 +33,8 @@ final List<AlertItem> sampleAlerts = [
     icon: Icons.warning_amber_outlined,
     iconColor: kAccent,
     bgColor: kAccentLight,
-    text: "Retard de 3 jours prévu sur 'Fondations profondes' - Immeuble Résidentiel Rabat",
+    text:
+        "Retard de 3 jours prévu sur 'Fondations profondes' - Immeuble Résidentiel Rabat",
     textColor: kTextMain,
     date: '25/03/2026',
   ),

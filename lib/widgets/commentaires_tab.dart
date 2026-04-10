@@ -27,13 +27,15 @@ class _CommentairesTabState extends State<CommentairesTab> {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
     setState(() {
-      _messages.add(_Message(
-        auteur: 'Ahmed Bennani',
-        role: 'ARCHITECTE',
-        date: 'maintenant',
-        texte: text,
-        isMine: true,
-      ));
+      _messages.add(
+        _Message(
+          auteur: 'Ahmed Bennani',
+          role: 'ARCHITECTE',
+          date: 'maintenant',
+          texte: text,
+          isMine: true,
+        ),
+      );
       _controller.clear();
     });
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -62,7 +64,12 @@ class _CommentairesTabState extends State<CommentairesTab> {
       child: isMobile
           ? Column(
               children: [
-                Expanded(child: _ChatSection(messages: _messages, scrollCtrl: _scrollCtrl)),
+                Expanded(
+                  child: _ChatSection(
+                    messages: _messages,
+                    scrollCtrl: _scrollCtrl,
+                  ),
+                ),
                 const SizedBox(height: 12),
                 _InputBar(controller: _controller, onSend: _send),
               ],
@@ -77,21 +84,18 @@ class _CommentairesTabState extends State<CommentairesTab> {
                     children: [
                       Expanded(
                         child: _ChatSection(
-                            messages: _messages,
-                            scrollCtrl: _scrollCtrl),
+                          messages: _messages,
+                          scrollCtrl: _scrollCtrl,
+                        ),
                       ),
                       const SizedBox(height: 12),
-                      _InputBar(
-                          controller: _controller, onSend: _send),
+                      _InputBar(controller: _controller, onSend: _send),
                     ],
                   ),
                 ),
                 const SizedBox(width: 20),
                 // Info panel
-                const SizedBox(
-                  width: 260,
-                  child: _InfoPanel(),
-                ),
+                const SizedBox(width: 260, child: _InfoPanel()),
               ],
             ),
     );
@@ -102,8 +106,7 @@ class _CommentairesTabState extends State<CommentairesTab> {
 class _ChatSection extends StatelessWidget {
   final List<_Message> messages;
   final ScrollController scrollCtrl;
-  const _ChatSection(
-      {required this.messages, required this.scrollCtrl});
+  const _ChatSection({required this.messages, required this.scrollCtrl});
 
   @override
   Widget build(BuildContext context) {
@@ -113,9 +116,10 @@ class _ChatSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 6,
-              offset: const Offset(0, 2)),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -126,14 +130,16 @@ class _ChatSection extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
             child: Row(
               children: const [
-                Icon(LucideIcons.messageSquare,
-                    size: 16, color: kTextSub),
+                Icon(LucideIcons.messageSquare, size: 16, color: kTextSub),
                 SizedBox(width: 8),
-                Text('Fil de discussion',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: kTextMain)),
+                Text(
+                  'Fil de discussion',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    color: kTextMain,
+                  ),
+                ),
               ],
             ),
           ),
@@ -195,8 +201,11 @@ class _InputBar extends StatelessWidget {
                 color: kAccent,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.send_rounded,
-                  color: Colors.white, size: 16),
+              child: const Icon(
+                Icons.send_rounded,
+                color: Colors.white,
+                size: 16,
+              ),
             ),
           ),
         ],
@@ -240,37 +249,42 @@ class _MessageBubble extends StatelessWidget {
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
             children: [
-              Text(msg.auteur,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                      color: kTextMain)),
+              Text(
+                msg.auteur,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  color: kTextMain,
+                ),
+              ),
               const SizedBox(width: 6),
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF3F4F6),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: Text(msg.role,
-                    style: const TextStyle(
-                        color: kTextSub,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.5)),
+                child: Text(
+                  msg.role,
+                  style: const TextStyle(
+                    color: kTextSub,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                  ),
+                ),
               ),
               const SizedBox(width: 6),
-              Text(msg.date,
-                  style: const TextStyle(
-                      color: kTextSub, fontSize: 11)),
+              Text(
+                msg.date,
+                style: const TextStyle(color: kTextSub, fontSize: 11),
+              ),
             ],
           ),
           const SizedBox(height: 6),
           // Bulle
           Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               color: msg.isMine ? kAccent : const Color(0xFFF3F4F6),
               borderRadius: BorderRadius.only(
@@ -280,10 +294,13 @@ class _MessageBubble extends StatelessWidget {
                 bottomRight: Radius.circular(msg.isMine ? 0 : 12),
               ),
             ),
-            child: Text(msg.texte,
-                style: TextStyle(
-                    color: msg.isMine ? Colors.white : kTextMain,
-                    fontSize: 13)),
+            child: Text(
+              msg.texte,
+              style: TextStyle(
+                color: msg.isMine ? Colors.white : kTextMain,
+                fontSize: 13,
+              ),
+            ),
           ),
         ],
       ),
@@ -304,19 +321,23 @@ class _InfoPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 6,
-              offset: const Offset(0, 2)),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('À propos de l\'espace client',
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                  color: kTextMain)),
+          const Text(
+            'À propos de l\'espace client',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 14,
+              color: kTextMain,
+            ),
+          ),
           const SizedBox(height: 10),
           const Text(
             "Cet espace permet aux architectes et au client d'échanger sur l'avancement du projet.",
@@ -327,24 +348,30 @@ class _InfoPanel extends StatelessWidget {
             'Les clients peuvent suivre l\'avancement.',
             'Les finances sont masquées pour les clients.',
             'L\'accès client est révoqué une fois le projet terminé ou annulé.',
-          ].map((t) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('• ',
-                        style: TextStyle(
-                            color: kTextSub, fontSize: 12)),
-                    Expanded(
-                      child: Text(t,
-                          style: const TextStyle(
-                              color: kTextSub,
-                              fontSize: 12,
-                              height: 1.4)),
+          ].map(
+            (t) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '• ',
+                    style: TextStyle(color: kTextSub, fontSize: 12),
+                  ),
+                  Expanded(
+                    child: Text(
+                      t,
+                      style: const TextStyle(
+                        color: kTextSub,
+                        fontSize: 12,
+                        height: 1.4,
+                      ),
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

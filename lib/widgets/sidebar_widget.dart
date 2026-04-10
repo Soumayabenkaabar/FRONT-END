@@ -34,13 +34,19 @@ class _SidebarWidgetState extends State<SidebarWidget>
   void initState() {
     super.initState();
     _animController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 220));
+      vsync: this,
+      duration: const Duration(milliseconds: 220),
+    );
     _widthAnim = Tween<double>(begin: 240, end: 64).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeInOut));
+      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
+    );
   }
 
   @override
-  void dispose() { _animController.dispose(); super.dispose(); }
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
 
   void _toggle() {
     setState(() => _collapsed = !_collapsed);
@@ -82,8 +88,10 @@ class _CollapsedRail extends StatelessWidget {
   final int notifCount;
 
   const _CollapsedRail({
-    required this.selectedIndex, required this.onSelect,
-    required this.onExpand,      required this.notifCount,
+    required this.selectedIndex,
+    required this.onSelect,
+    required this.onExpand,
+    required this.notifCount,
   });
 
   @override
@@ -97,16 +105,23 @@ class _CollapsedRail extends StatelessWidget {
             icon: const Icon(Icons.menu_rounded, color: Colors.white),
           ),
           const SizedBox(height: 10),
-          Container(height: 1, margin: const EdgeInsets.symmetric(horizontal: 10), color: Colors.white10),
+          Container(
+            height: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            color: Colors.white10,
+          ),
           const SizedBox(height: 10),
           ...List.generate(navItems.length, (i) {
-            final item    = navItems[i];
+            final item = navItems[i];
             final isActive = i == selectedIndex;
-            final badge   = i == kNotifNavIndex && notifCount > 0 ? notifCount : null;
+            final badge = i == kNotifNavIndex && notifCount > 0
+                ? notifCount
+                : null;
             return GestureDetector(
               onTap: () => onSelect(i),
               child: Container(
-                width: 44, height: 44,
+                width: 44,
+                height: 44,
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
                   color: isActive ? kAccent : Colors.transparent,
@@ -114,16 +129,33 @@ class _CollapsedRail extends StatelessWidget {
                 ),
                 child: Stack(
                   children: [
-                    Center(child: Icon(item.lucideIcon,
-                        color: isActive ? Colors.black : Colors.white70, size: 20)),
+                    Center(
+                      child: Icon(
+                        item.lucideIcon,
+                        color: isActive ? Colors.black : Colors.white70,
+                        size: 20,
+                      ),
+                    ),
                     if (badge != null)
                       Positioned(
-                        top: 6, right: 6,
+                        top: 6,
+                        right: 6,
                         child: Container(
-                          width: 14, height: 14,
-                          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                          child: Center(child: Text('$badge',
-                              style: const TextStyle(color: Colors.white, fontSize: 8))),
+                          width: 14,
+                          height: 14,
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '$badge',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                   ],
@@ -171,13 +203,19 @@ class SidebarContent extends StatelessWidget {
                 const Icon(LucideIcons.building2, color: Colors.amber),
                 const SizedBox(width: 8),
                 const Expanded(
-                  child: Text('ArchiManager',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  child: Text(
+                    'ArchiManager',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                 ),
                 if (onCollapse != null)
                   GestureDetector(
                     onTap: onCollapse,
-                    child: const Icon(LucideIcons.menu, color: Colors.white54, size: 20),
+                    child: const Icon(
+                      LucideIcons.menu,
+                      color: Colors.white54,
+                      size: 20,
+                    ),
                   ),
               ],
             ),
@@ -185,11 +223,15 @@ class SidebarContent extends StatelessWidget {
 
             // ── MENU ──────────────────────────────────────────────────
             ...List.generate(navItems.length, (i) {
-              final item  = navItems[i];
-              final badge = i == kNotifNavIndex && notifCount > 0 ? notifCount : null;
+              final item = navItems[i];
+              final badge = i == kNotifNavIndex && notifCount > 0
+                  ? notifCount
+                  : null;
               return _MenuItem(
-                icon: item.lucideIcon, title: item.label,
-                isActive: i == selectedIndex, badge: badge,
+                icon: item.lucideIcon,
+                title: item.label,
+                isActive: i == selectedIndex,
+                badge: badge,
                 onTap: () => onSelect(i),
               );
             }),
@@ -202,26 +244,38 @@ class SidebarContent extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 32, height: 32,
+                  width: 32,
+                  height: 32,
                   decoration: BoxDecoration(
                     color: kAccent.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Text(
-                      architecteNom.isNotEmpty ? architecteNom[0].toUpperCase() : 'A',
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                      architecteNom.isNotEmpty
+                          ? architecteNom[0].toUpperCase()
+                          : 'A',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(architecteNom,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
-                      overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    architecteNom,
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 IconButton(
-                  icon: const Icon(LucideIcons.logOut, color: Colors.white54, size: 18),
+                  icon: const Icon(
+                    LucideIcons.logOut,
+                    color: Colors.white54,
+                    size: 18,
+                  ),
                   tooltip: 'Se déconnecter',
                   onPressed: onLogout,
                 ),
@@ -243,8 +297,11 @@ class _MenuItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const _MenuItem({
-    required this.icon,   required this.title,
-    required this.isActive, required this.onTap, this.badge,
+    required this.icon,
+    required this.title,
+    required this.isActive,
+    required this.onTap,
+    this.badge,
   });
 
   @override
@@ -264,15 +321,22 @@ class _MenuItem extends StatelessWidget {
             Icon(icon, color: isActive ? Colors.black : Colors.white, size: 18),
             const SizedBox(width: 10),
             Expanded(
-              child: Text(title,
-                  style: TextStyle(color: isActive ? Colors.black : Colors.white)),
+              child: Text(
+                title,
+                style: TextStyle(color: isActive ? Colors.black : Colors.white),
+              ),
             ),
             if (badge != null)
               Container(
                 padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
-                child: Text('$badge',
-                    style: const TextStyle(color: Colors.white, fontSize: 10)),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  '$badge',
+                  style: const TextStyle(color: Colors.white, fontSize: 10),
+                ),
               ),
           ],
         ),
