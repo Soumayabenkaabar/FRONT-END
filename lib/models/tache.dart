@@ -1,62 +1,88 @@
-/// Modèle Tache — table `taches`
-///
-/// Colonnes BDD :
-///   id, projet_id, titre, description, statut,
-///   date_debut, date_fin, budget_estime, created_at
 class Tache {
-  final String id;
-  final String projetId;
-  final String titre;
-  final String description;
-  final String statut; // 'en_attente' | 'en_cours' | 'termine'
+  final String  id;
+  final String  projetId;
+  final String? phaseId;
+  final String  titre;
+  final String  description;
+  final String  statut;
   final String? dateDebut;
   final String? dateFin;
-  final double budgetEstime;
-  final String createdAt;
+  final double  budgetEstime;
+  final double  coutReel;
+  final String  phase;      // colonne phase TEXT legacy (on garde pour compat)
+  final String  createdAt;
 
   const Tache({
     required this.id,
     required this.projetId,
+    this.phaseId,
     required this.titre,
     this.description = '',
-    this.statut = 'en_attente',
+    required this.statut,
     this.dateDebut,
     this.dateFin,
     this.budgetEstime = 0,
-    this.createdAt = '',
+    this.coutReel     = 0,
+    this.phase        = 'Général',
+    this.createdAt    = '',
   });
 
-  // ── Label et couleur gérés côté UI dans projet_detail_screen ─────────────
-  String get statutLabel {
-    switch (statut) {
-      case 'en_cours':
-        return 'En cours';
-      case 'termine':
-        return 'Terminé';
-      default:
-        return 'Planifié';
-    }
-  }
-
   factory Tache.fromJson(Map<String, dynamic> j) => Tache(
-    id: j['id']?.toString() ?? '',
-    projetId: j['projet_id']?.toString() ?? '',
-    titre: j['titre'] ?? '',
-    description: j['description'] ?? '',
-    statut: j['statut'] ?? 'en_attente',
-    dateDebut: j['date_debut']?.toString(),
-    dateFin: j['date_fin']?.toString(),
+    id:           j['id']            as String? ?? '',
+    projetId:     j['projet_id']     as String? ?? '',
+    phaseId:      j['phase_id']      as String?,
+    titre:        j['titre']         as String? ?? '',
+    description:  j['description']   as String? ?? '',
+    statut:       j['statut']        as String? ?? 'en_attente',
+    dateDebut:    j['date_debut']    as String?,
+    dateFin:      j['date_fin']      as String?,
     budgetEstime: (j['budget_estime'] as num?)?.toDouble() ?? 0,
-    createdAt: j['created_at']?.toString() ?? '',
+    coutReel:     (j['cout_reel']     as num?)?.toDouble() ?? 0,
+    phase:        j['phase']         as String? ?? 'Général',
+    createdAt:    j['created_at']    as String? ?? '',
   );
 
   Map<String, dynamic> toJson() => {
-    'projet_id': projetId,
-    'titre': titre,
-    'description': description,
-    'statut': statut,
-    'date_debut': dateDebut,
-    'date_fin': dateFin,
+    'id':            id,
+    'projet_id':     projetId,
+    'phase_id':      phaseId,
+    'titre':         titre,
+    'description':   description,
+    'statut':        statut,
+    'date_debut':    dateDebut,
+    'date_fin':      dateFin,
     'budget_estime': budgetEstime,
+    'cout_reel':     coutReel,
+    'phase':         phase,
+    'created_at':    createdAt,
   };
+
+  String get statutLabel {
+    switch (statut) {
+      case 'en_cours': return 'En cours';
+      case 'termine':  return 'Terminé';
+      default:         return 'Pas commencé';
+    }
+  }
+
+  Tache copyWith({
+    String?  id, String? projetId, String? phaseId,
+    String?  titre, String? description, String? statut,
+    String?  dateDebut, String? dateFin,
+    double?  budgetEstime, double? coutReel,
+    String?  phase, String? createdAt,
+  }) => Tache(
+    id:           id           ?? this.id,
+    projetId:     projetId     ?? this.projetId,
+    phaseId:      phaseId      ?? this.phaseId,
+    titre:        titre        ?? this.titre,
+    description:  description  ?? this.description,
+    statut:       statut       ?? this.statut,
+    dateDebut:    dateDebut    ?? this.dateDebut,
+    dateFin:      dateFin      ?? this.dateFin,
+    budgetEstime: budgetEstime ?? this.budgetEstime,
+    coutReel:     coutReel     ?? this.coutReel,
+    phase:        phase        ?? this.phase,
+    createdAt:    createdAt    ?? this.createdAt,
+  );
 }
