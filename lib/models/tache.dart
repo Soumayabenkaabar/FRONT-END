@@ -8,8 +8,8 @@ class Tache {
   final String? dateDebut;
   final String? dateFin;
   final double  budgetEstime;
-  final double  coutReel;
-  final String  phase;      // colonne phase TEXT legacy (on garde pour compat)
+  final String  remarques;   // ← nouveau
+  final String  phase;       // legacy
   final String  createdAt;
 
   const Tache({
@@ -22,7 +22,7 @@ class Tache {
     this.dateDebut,
     this.dateFin,
     this.budgetEstime = 0,
-    this.coutReel     = 0,
+    this.remarques    = '',
     this.phase        = 'Général',
     this.createdAt    = '',
   });
@@ -37,7 +37,7 @@ class Tache {
     dateDebut:    j['date_debut']    as String?,
     dateFin:      j['date_fin']      as String?,
     budgetEstime: (j['budget_estime'] as num?)?.toDouble() ?? 0,
-    coutReel:     (j['cout_reel']     as num?)?.toDouble() ?? 0,
+    remarques:    j['remarques']     as String? ?? '',
     phase:        j['phase']         as String? ?? 'Général',
     createdAt:    j['created_at']    as String? ?? '',
   );
@@ -52,7 +52,7 @@ class Tache {
     'date_debut':    dateDebut,
     'date_fin':      dateFin,
     'budget_estime': budgetEstime,
-    'cout_reel':     coutReel,
+    'remarques':     remarques,
     'phase':         phase,
     'created_at':    createdAt,
   };
@@ -66,11 +66,11 @@ class Tache {
   }
 
   Tache copyWith({
-    String?  id, String? projetId, String? phaseId,
-    String?  titre, String? description, String? statut,
-    String?  dateDebut, String? dateFin,
-    double?  budgetEstime, double? coutReel,
-    String?  phase, String? createdAt,
+    String? id, String? projetId, String? phaseId,
+    String? titre, String? description, String? statut,
+    String? dateDebut, String? dateFin,
+    double? budgetEstime, String? remarques,
+    String? phase, String? createdAt,
   }) => Tache(
     id:           id           ?? this.id,
     projetId:     projetId     ?? this.projetId,
@@ -81,7 +81,7 @@ class Tache {
     dateDebut:    dateDebut    ?? this.dateDebut,
     dateFin:      dateFin      ?? this.dateFin,
     budgetEstime: budgetEstime ?? this.budgetEstime,
-    coutReel:     coutReel     ?? this.coutReel,
+    remarques:    remarques    ?? this.remarques,
     phase:        phase        ?? this.phase,
     createdAt:    createdAt    ?? this.createdAt,
   );

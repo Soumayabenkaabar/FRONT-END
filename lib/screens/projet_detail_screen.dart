@@ -486,15 +486,40 @@ class _TachesTabState extends State<_TachesTab> {
   //  DIALOG TÂCHE
   // ════════════════════════════════════════════════════════════════════════════
   void _showTacheDialog(BuildContext context, Tache? existing, {String? preselectedPhaseId}) {
-    final titreCtrl  = TextEditingController(text: existing?.titre ?? '');
-    final descCtrl   = TextEditingController(text: existing?.description ?? '');
-    final debutCtrl  = TextEditingController(text: existing?.dateDebut ?? '');
-    final finCtrl    = TextEditingController(text: existing?.dateFin ?? '');
-    final budgetCtrl = TextEditingController(text: existing != null && existing.budgetEstime > 0 ? existing.budgetEstime.toInt().toString() : '');
-    final coutCtrl   = TextEditingController(text: existing != null && existing.coutReel > 0 ? existing.coutReel.toInt().toString() : '');
+    final titreCtrl    = TextEditingController(text: existing?.titre ?? '');
+    final descCtrl     = TextEditingController(text: existing?.description ?? '');
+    final debutCtrl    = TextEditingController(text: existing?.dateDebut ?? '');
+    final finCtrl      = TextEditingController(text: existing?.dateFin ?? '');
+    final budgetCtrl   = TextEditingController(text: existing != null && existing.budgetEstime > 0 ? existing.budgetEstime.toInt().toString() : '');
+    final remarquesCtrl = TextEditingController(text: existing?.remarques ?? '');
     String  statut  = existing?.statut ?? 'en_attente';
     String? phaseId = existing?.phaseId ?? preselectedPhaseId;
     final isEdit    = existing != null;
+
+    // ── Helper : ouvrir le date-picker et remplir le champ ────────────────
+    Future<void> pickDate(BuildContext ctx, TextEditingController ctrl, {DateTime? firstDate}) async {
+      DateTime initial = DateTime.now();
+      if (ctrl.text.isNotEmpty) {
+        final parsed = DateTime.tryParse(ctrl.text);
+        if (parsed != null) initial = parsed;
+      }
+      final picked = await showDatePicker(
+        context: ctx,
+        initialDate: initial,
+        firstDate: firstDate ?? DateTime(2020),
+        lastDate: DateTime(2035),
+        locale: const Locale('fr', 'FR'),
+        builder: (ctx2, child) => Theme(
+          data: Theme.of(ctx2).copyWith(
+            colorScheme: ColorScheme.light(primary: kAccent, onPrimary: Colors.white, surface: Colors.white, onSurface: kTextMain),
+          ),
+          child: child!,
+        ),
+      );
+      if (picked != null) {
+        ctrl.text = '${picked.year}-${picked.month.toString().padLeft(2,'0')}-${picked.day.toString().padLeft(2,'0')}';
+      }
+    }
 
     showDialog(context: context, builder: (_) => StatefulBuilder(builder: (ctx, sd) {
       return Dialog(
@@ -509,7 +534,7 @@ class _TachesTabState extends State<_TachesTab> {
             ),
             Padding(padding: const EdgeInsets.all(20), child: Column(children: [
 
-              // Sélecteur de phase
+              // ── Sélecteur de phase ────────────────────────────────────
               if (phases.isNotEmpty) ...[
                 const Align(alignment: Alignment.centerLeft, child: Text('PHASE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: kTextSub, letterSpacing: 0.5))),
                 const SizedBox(height: 7),
@@ -535,23 +560,97 @@ class _TachesTabState extends State<_TachesTab> {
                 const SizedBox(height: 14),
               ],
 
-              _DField(icon: LucideIcons.checkSquare, label: 'TITRE *',     hint: 'Ex: Fondations',    controller: titreCtrl),
+              // ── Titre ─────────────────────────────────────────────────
+              _DField(icon: LucideIcons.checkSquare, label: 'TITRE *', hint: 'Ex: Fondations', controller: titreCtrl),
               const SizedBox(height: 12),
-              _DField(icon: LucideIcons.fileText,    label: 'DESCRIPTION', hint: 'Détails...',         controller: descCtrl, maxLines: 2),
+              _DField(icon: LucideIcons.fileText, label: 'DESCRIPTION', hint: 'Détails de la tâche...', controller: descCtrl, maxLines: 2),
               const SizedBox(height: 12),
+
+              // ── Dates avec calendrier ─────────────────────────────────
+              const Align(alignment: Alignment.centerLeft, child: Text('DATES', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: kTextSub, letterSpacing: 0.5))),
+              const SizedBox(height: 7),
               Row(children: [
-                Expanded(child: _DField(icon: LucideIcons.calendar, label: 'DATE DÉBUT', hint: '2025-01-15', controller: debutCtrl)),
-                const SizedBox(width: 12),
-                Expanded(child: _DField(icon: LucideIcons.calendar, label: 'DATE FIN',   hint: '2025-06-30', controller: finCtrl)),
+                // Date début
+                Expanded(child: GestureDetector(
+                  onTap: () async {
+                    await pickDate(ctx, debutCtrl);
+                    sd(() {}); // refresh
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFE5E7EB))),
+                    child: Row(children: [
+                      const Icon(LucideIcons.calendarDays, size: 14, color: kTextSub),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(
+                        debutCtrl.text.isEmpty ? 'Date début' : debutCtrl.text,
+                        style: TextStyle(fontSize: 13, color: debutCtrl.text.isEmpty ? kTextSub : kTextMain),
+                      )),
+                      if (debutCtrl.text.isNotEmpty)
+                        GestureDetector(onTap: () { debutCtrl.clear(); sd(() {}); }, child: const Icon(LucideIcons.x, size: 13, color: kTextSub)),
+                    ]),
+                  ),
+                )),
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text('→', style: TextStyle(color: kTextSub, fontWeight: FontWeight.w600))),
+                // Date fin
+                Expanded(child: GestureDetector(
+                  onTap: () async {
+                    // firstDate = dateDebut si défini
+                    DateTime? first;
+                    if (debutCtrl.text.isNotEmpty) {
+                      first = DateTime.tryParse(debutCtrl.text);
+                    }
+                    await pickDate(ctx, finCtrl, firstDate: first);
+                    sd(() {});
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFE5E7EB))),
+                    child: Row(children: [
+                      const Icon(LucideIcons.calendarCheck, size: 14, color: kTextSub),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(
+                        finCtrl.text.isEmpty ? 'Date fin' : finCtrl.text,
+                        style: TextStyle(fontSize: 13, color: finCtrl.text.isEmpty ? kTextSub : kTextMain),
+                      )),
+                      if (finCtrl.text.isNotEmpty)
+                        GestureDetector(onTap: () { finCtrl.clear(); sd(() {}); }, child: const Icon(LucideIcons.x, size: 13, color: kTextSub)),
+                    ]),
+                  ),
+                )),
               ]),
+              // Message d'erreur dates
+              if (debutCtrl.text.isNotEmpty && finCtrl.text.isNotEmpty) ...[
+                Builder(builder: (_) {
+                  final d = DateTime.tryParse(debutCtrl.text);
+                  final f = DateTime.tryParse(finCtrl.text);
+                  if (d != null && f != null && !f.isAfter(d)) {
+                    return const Padding(
+                      padding: EdgeInsets.only(top: 6),
+                      child: Row(children: [
+                        Icon(LucideIcons.alertCircle, size: 12, color: kRed),
+                        SizedBox(width: 5),
+                        Text('La date de fin doit être après la date de début', style: TextStyle(fontSize: 11, color: kRed)),
+                      ]),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
+              ],
+
               const SizedBox(height: 12),
-              Row(children: [
-                Expanded(child: _DField(icon: LucideIcons.banknote,    label: 'BUDGET PRÉVU (DT)', hint: '50 000', controller: budgetCtrl, keyboardType: TextInputType.number)),
-                const SizedBox(width: 12),
-                Expanded(child: _DField(icon: LucideIcons.trendingUp, label: 'COÛT RÉEL (DT)',    hint: '0',      controller: coutCtrl,   keyboardType: TextInputType.number)),
-              ]),
+
+              // ── Budget ────────────────────────────────────────────────
+              _DField(icon: LucideIcons.banknote, label: 'BUDGET PRÉVU (DT)', hint: '50 000', controller: budgetCtrl, keyboardType: TextInputType.number),
+
+              const SizedBox(height: 12),
+
+              // ── Remarques ─────────────────────────────────────────────
+              _DField(icon: LucideIcons.messageSquare, label: 'REMARQUES', hint: 'Notes, observations, points d\'attention...', controller: remarquesCtrl, maxLines: 3),
+
               const SizedBox(height: 14),
-              // Statut
+
+              // ── Statut ────────────────────────────────────────────────
               const Align(alignment: Alignment.centerLeft, child: Text('STATUT', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: kTextSub, letterSpacing: 0.5))),
               const SizedBox(height: 8),
               Row(children: [
@@ -575,6 +674,15 @@ class _TachesTabState extends State<_TachesTab> {
               onCancel: () => Navigator.pop(ctx),
               onConfirm: () async {
                 if (titreCtrl.text.trim().isEmpty) { _snack(ctx, 'Titre obligatoire', kRed); return; }
+                // Validation dates
+                if (debutCtrl.text.isNotEmpty && finCtrl.text.isNotEmpty) {
+                  final d = DateTime.tryParse(debutCtrl.text);
+                  final f = DateTime.tryParse(finCtrl.text);
+                  if (d != null && f != null && !f.isAfter(d)) {
+                    _snack(ctx, 'La date de fin doit être après la date de début', kRed);
+                    return;
+                  }
+                }
                 final t = Tache(
                   id:           isEdit ? existing!.id : '',
                   projetId:     widget.project.id,
@@ -585,11 +693,10 @@ class _TachesTabState extends State<_TachesTab> {
                   dateDebut:    debutCtrl.text.trim().isEmpty ? null : debutCtrl.text.trim(),
                   dateFin:      finCtrl.text.trim().isEmpty   ? null : finCtrl.text.trim(),
                   budgetEstime: double.tryParse(budgetCtrl.text.replaceAll(' ', '')) ?? 0,
-                  coutReel:     double.tryParse(coutCtrl.text.replaceAll(' ', ''))   ?? 0,
+                  remarques:    remarquesCtrl.text.trim(),
                   createdAt:    isEdit ? existing!.createdAt : '',
                 );
                 if (isEdit) {
-                  // si statut change, mettre à jour le budget
                   if (statut != existing!.statut) {
                     await TacheService.updateStatut(t.id, statut, projetId: widget.project.id, ancienStatut: existing.statut, budgetEstime: t.budgetEstime);
                   }
@@ -645,11 +752,28 @@ class _TachesTabState extends State<_TachesTab> {
             Expanded(child: _ViewInfoTile(icon: LucideIcons.calendarCheck, label: 'Fin',          value: t.dateFin   ?? '—')),
           ]),
           const SizedBox(height: 10),
-          Row(children: [
-            Expanded(child: _ViewInfoTile(icon: LucideIcons.banknote,    label: 'Budget prévu', value: t.budgetEstime > 0 ? _fmtNum(t.budgetEstime) : '—')),
-            const SizedBox(width: 10),
-            Expanded(child: _ViewInfoTile(icon: LucideIcons.trendingUp,  label: 'Coût réel',    value: t.coutReel    > 0 ? _fmtNum(t.coutReel)     : '—')),
-          ]),
+          _ViewInfoTile(icon: LucideIcons.banknote, label: 'Budget prévu', value: t.budgetEstime > 0 ? _fmtNum(t.budgetEstime) : '—'),
+          if (t.remarques.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFBEB),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFFDE68A)),
+              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(children: const [
+                  Icon(LucideIcons.messageSquare, size: 12, color: Color(0xFFD97706)),
+                  SizedBox(width: 5),
+                  Text('Remarques', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFFD97706))),
+                ]),
+                const SizedBox(height: 5),
+                Text(t.remarques, style: const TextStyle(fontSize: 13, color: kTextMain, height: 1.5)),
+              ]),
+            ),
+          ],
         ])),
         Padding(padding: const EdgeInsets.fromLTRB(20, 0, 20, 20), child: SizedBox(width: double.infinity,
           child: ElevatedButton(
@@ -750,14 +874,19 @@ class _PhaseSectionState extends State<_PhaseSection> {
 }
 
 // ── Carte tâche (style prototype) ─────────────────────────────────────────────
-class _TacheCard extends StatelessWidget {
+class _TacheCard extends StatefulWidget {
   final Tache tache; final int index;
   final ValueChanged<String> onStatusChanged;
   final VoidCallback onDelete, onEdit, onView;
   const _TacheCard({required this.tache, required this.index, required this.onStatusChanged, required this.onDelete, required this.onEdit, required this.onView});
+  @override State<_TacheCard> createState() => _TacheCardState();
+}
+class _TacheCardState extends State<_TacheCard> {
+  bool _remarquesExpanded = false;
 
   @override
   Widget build(BuildContext context) {
+    final tache = widget.tache;
     final color = _tacheColor(tache.statut);
     final pct   = tache.statut == 'termine' ? 100 : tache.statut == 'en_cours' ? 65 : 0;
 
@@ -787,7 +916,7 @@ class _TacheCard extends StatelessWidget {
           // Badge statut + actions
           Row(children: [
             Material(color: Colors.transparent, child: PopupMenuButton<String>(
-              onSelected: onStatusChanged,
+              onSelected: widget.onStatusChanged,
               itemBuilder: (_) => [
                 for (final s in ['en_attente', 'en_cours', 'termine'])
                   PopupMenuItem(value: s, child: Row(children: [Container(width: 8, height: 8, decoration: BoxDecoration(color: _tacheColor(s), shape: BoxShape.circle)), const SizedBox(width: 8), Text(_tacheLabel(s), style: const TextStyle(fontSize: 13))])),
@@ -806,7 +935,7 @@ class _TacheCard extends StatelessWidget {
             )),
             const Spacer(),
             PopupMenuButton<String>(
-              onSelected: (v) { if (v == 'view') onView(); if (v == 'edit') onEdit(); if (v == 'delete') onDelete(); },
+              onSelected: (v) { if (v == 'view') widget.onView(); if (v == 'edit') widget.onEdit(); if (v == 'delete') widget.onDelete(); },
               itemBuilder: (_) => [
                 const PopupMenuItem(value: 'view',   child: Row(children: [Icon(LucideIcons.eye,    size: 14, color: kTextSub), SizedBox(width: 8), Text('Consulter')])),
                 const PopupMenuItem(value: 'edit',   child: Row(children: [Icon(LucideIcons.pencil, size: 14, color: kAccent),  SizedBox(width: 8), Text('Modifier')])),
@@ -815,8 +944,8 @@ class _TacheCard extends StatelessWidget {
               child: const Padding(padding: EdgeInsets.all(4), child: Icon(LucideIcons.moreVertical, size: 16, color: kTextSub)),
             ),
           ]),
-          // Dates + budgets
-          if (tache.dateDebut != null || tache.dateFin != null || tache.budgetEstime > 0 || tache.coutReel > 0) ...[
+          // Dates + budget
+          if (tache.dateDebut != null || tache.dateFin != null || tache.budgetEstime > 0) ...[
             const SizedBox(height: 10),
             const Divider(height: 1, color: Color(0xFFF3F4F6)),
             const SizedBox(height: 10),
@@ -826,9 +955,36 @@ class _TacheCard extends StatelessWidget {
               const SizedBox(height: 6),
               _InfoRow(icon: LucideIcons.dollarSign, label: 'Budget prévu', value: _fmtNum(tache.budgetEstime)),
             ],
-            if (tache.coutReel > 0) ...[
-              const SizedBox(height: 6),
-              _InfoRow(icon: LucideIcons.trendingUp, label: 'Coût réel', value: _fmtNum(tache.coutReel)),
+          ],
+          // ── Remarques expandable ──────────────────────────────────────
+          if (tache.remarques.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            const Divider(height: 1, color: Color(0xFFF3F4F6)),
+            const SizedBox(height: 6),
+            GestureDetector(
+              onTap: () => setState(() => _remarquesExpanded = !_remarquesExpanded),
+              child: Row(children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(6), border: Border.all(color: const Color(0xFFFDE68A))),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(LucideIcons.messageSquare, size: 11, color: Color(0xFFD97706)),
+                    const SizedBox(width: 4),
+                    const Text('Remarques', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFFD97706))),
+                  ]),
+                ),
+                const SizedBox(width: 6),
+                Icon(_remarquesExpanded ? LucideIcons.chevronUp : LucideIcons.chevronDown, size: 13, color: const Color(0xFFD97706)),
+              ]),
+            ),
+            if (_remarquesExpanded) ...[
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: const Color(0xFFFFFBEB), borderRadius: BorderRadius.circular(8), border: Border.all(color: const Color(0xFFFDE68A))),
+                child: Text(tache.remarques, style: const TextStyle(fontSize: 12, color: kTextMain, height: 1.5)),
+              ),
             ],
           ],
         ]),
@@ -1024,169 +1180,58 @@ class _FinancesTabState extends State<_FinancesTab> {
     ]));
   }
 
- void _showAddFactureDialog(BuildContext context) {
-  final numCtrl = TextEditingController();
-  final montantCtrl = TextEditingController();
-  final echeanceCtrl = TextEditingController();
-  String statut = 'en_attente';
-
-  showDialog(
-    context: context,
-    builder: (_) => StatefulBuilder(
-      builder: (ctx, sd) {
-        return Dialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _DialogHeader(
-                  icon: LucideIcons.filePlus,
-                  title: 'Nouvelle facture',
-                  subtitle: 'Ajoutez une facture au projet',
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      _DField(
-                        icon: LucideIcons.hash,
-                        label: 'NUMÉRO *',
-                        hint: 'FAC-2025-001',
-                        controller: numCtrl,
+  void _showAddFactureDialog(BuildContext context) {
+    final numCtrl = TextEditingController(); final montantCtrl = TextEditingController(); final echeanceCtrl = TextEditingController(); String statut = 'en_attente';
+    showDialog(context: context, builder: (_) => StatefulBuilder(builder: (ctx, sd) {
+      return Dialog(insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 420), child: Column(mainAxisSize: MainAxisSize.min, children: [
+        _DialogHeader(icon: LucideIcons.filePlus, title: 'Nouvelle facture', subtitle: 'Ajoutez une facture au projet'),
+        Padding(padding: const EdgeInsets.all(20), child: Column(children: [
+          _DField(icon: LucideIcons.hash, label: 'NUMÉRO *', hint: 'FAC-2025-001', controller: numCtrl),
+          const SizedBox(height: 12),
+          _DField(icon: LucideIcons.banknote, label: 'MONTANT (DT) *', hint: '150 000', controller: montantCtrl, keyboardType: TextInputType.number),
+          const SizedBox(height: 12),
+          _DField(icon: LucideIcons.calendar, label: "DATE D'ÉCHÉANCE", hint: '2025-03-31', controller: echeanceCtrl),
+          const SizedBox(height: 14),
+          const Align(alignment: Alignment.centerLeft, child: Text('STATUT', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: kTextSub, letterSpacing: 0.5))),
+          const SizedBox(height: 8),
+          Row(children: [
+            for (final s in ['en_attente', 'payee', 'en_retard'])
+              Expanded(child: Padding(
+                padding: EdgeInsets.only(right: s == 'en_retard' ? 0 : 8),
+                child: GestureDetector(
+                  onTap: () => sd(() => statut = s),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: statut == s ? _factureColor(s).withOpacity(0.1) : Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: statut == s ? _factureColor(s) : const Color(0xFFE5E7EB),
+                        width: statut == s ? 2 : 1,
                       ),
-                      const SizedBox(height: 12),
-
-                      _DField(
-                        icon: LucideIcons.banknote,
-                        label: 'MONTANT (DT) *',
-                        hint: '150 000',
-                        controller: montantCtrl,
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 12),
-
-                      _DField(
-                        icon: LucideIcons.calendar,
-                        label: "DATE D'ÉCHÉANCE",
-                        hint: '2025-03-31',
-                        controller: echeanceCtrl,
-                      ),
-                      const SizedBox(height: 14),
-
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'STATUT',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: kTextSub,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-
-                      Row(
-                        children: [
-                          for (final s in ['en_attente', 'payee', 'en_retard'])
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  right: s == 'en_retard' ? 0 : 8,
-                                ),
-                                child: GestureDetector(
-                                  onTap: () => sd(() => statut = s),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 150),
-                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: statut == s
-                                          ? _factureColor(s).withOpacity(0.1)
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: statut == s
-                                            ? _factureColor(s)
-                                            : const Color(0xFFE5E7EB),
-                                        width: statut == s ? 2 : 1,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      _factureLabel(s),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: statut == s
-                                            ? FontWeight.w700
-                                            : FontWeight.w500,
-                                        color: statut == s
-                                            ? _factureColor(s)
-                                            : kTextSub,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
+                    ),
+                    child: Text(_factureLabel(s),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: statut == s ? FontWeight.w700 : FontWeight.w500,
+                        color: statut == s ? _factureColor(s) : kTextSub,
+                      )),
                   ),
                 ),
-
-                _DialogActions(
-                  onCancel: () => Navigator.pop(ctx),
-                  onConfirm: () async {
-                    if (numCtrl.text.trim().isEmpty ||
-                        montantCtrl.text.trim().isEmpty) {
-                      _snack(ctx, 'Champs obligatoires', kRed);
-                      return;
-                    }
-
-                    final m = double.tryParse(
-                      montantCtrl.text.replaceAll(' ', ''),
-                    );
-
-                    if (m == null || m <= 0) {
-                      _snack(ctx, 'Montant invalide', kRed);
-                      return;
-                    }
-
-                    await FactureService.addFacture(
-                      Facture(
-                        id: '',
-                        projetId: widget.project.id,
-                        numero: numCtrl.text.trim(),
-                        montant: m,
-                        statut: statut,
-                        dateEcheance: echeanceCtrl.text.trim().isEmpty
-                            ? null
-                            : echeanceCtrl.text.trim(),
-                        createdAt: DateTime.now().toIso8601String(),
-                      ),
-                    );
-
-                    Navigator.pop(ctx);
-                    _load();
-                    _snack(context, 'Facture ajoutée', kAccent);
-                  },
-                  label: 'Ajouter',
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    ),
-  );
-}
+              )),
+          ]),
+        ])),
+        _DialogActions(onCancel: () => Navigator.pop(ctx), onConfirm: () async {
+          if (numCtrl.text.trim().isEmpty || montantCtrl.text.trim().isEmpty) { _snack(ctx, 'Champs obligatoires', kRed); return; }
+          final m = double.tryParse(montantCtrl.text.replaceAll(' ', '')); if (m == null || m <= 0) { _snack(ctx, 'Montant invalide', kRed); return; }
+          await FactureService.addFacture(Facture(id: '', projetId: widget.project.id, numero: numCtrl.text.trim(), montant: m, statut: statut, dateEcheance: echeanceCtrl.text.trim().isEmpty ? null : echeanceCtrl.text.trim(), createdAt: DateTime.now().toIso8601String()));
+          Navigator.pop(ctx); _load(); _snack(context, 'Facture ajoutée', kAccent);
+        }, label: 'Ajouter'),
+      ])));
+    }));
+  }
 }
 
 class _FactureRow extends StatelessWidget {
