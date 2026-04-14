@@ -26,6 +26,13 @@ class ProjetService {
     await _db.from('projets').update(projet.toJson()).eq('id', projet.id);
   }
 
+  // 💰 UPDATE budget_depense automatiquement depuis les factures
+  static Future<void> syncBudgetDepense(String projetId) async {
+    final factures = await _db.from('factures').select('montant').eq('projet_id', projetId);
+    final total = (factures as List).fold<double>(0.0, (s, f) => s + ((f['montant'] as num?)?.toDouble() ?? 0));
+    await _db.from('projets').update({'budget_depense': total}).eq('id', projetId);
+  }
+
   // 🗑️ DELETE
   static Future<void> deleteProjet(String id) async {
     await _db.from('projets').delete().eq('id', id);

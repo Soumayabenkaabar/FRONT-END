@@ -1,6 +1,7 @@
 import 'package:archi_manager/service/membre_service.dart';
 import 'package:archi_manager/service/projet_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../constants/colors.dart';
 import '../models/membre.dart';
@@ -974,7 +975,7 @@ void showViewDialog(BuildContext context, Membre membre) {
 // ══════════════════════════════════════════════════════════════════════════════
 //  DIALOG MUTUALISÉ (Ajouter + Modifier)
 // ══════════════════════════════════════════════════════════════════════════════
-class _MembreDialog extends StatelessWidget {
+class _MembreDialog extends StatefulWidget {
   final String title, subtitle, btnLabel;
   final IconData icon, btnIcon;
   final Color? iconBg, iconColor, btnColor;
@@ -985,7 +986,7 @@ class _MembreDialog extends StatelessWidget {
       telCtrl;
   final bool disponible;
   final ValueChanged<bool> onDisponibleChanged;
-  final VoidCallback onSubmit;
+  final Future<void> Function() onSubmit;
   // ✅ List<Map<String, String>> — clés typées String (id + titre)
   final List<Map<String, String>>? projets;
   final String? selectedProjetId;
@@ -1007,17 +1008,25 @@ class _MembreDialog extends StatelessWidget {
     required this.telCtrl,
     required this.disponible,
     required this.onDisponibleChanged,
-    required this.onSubmit,
+    required this.onSubmit, // Future<void> Function()
     this.projets,
     this.selectedProjetId,
     this.onProjetChanged,
   });
 
   @override
+  State<_MembreDialog> createState() => _MembreDialogState();
+}
+
+class _MembreDialogState extends State<_MembreDialog> {
+  final _formKey = GlobalKey<FormState>();
+  bool _loading = false;
+
+  @override
   Widget build(BuildContext context) {
-    final color = iconColor ?? kAccent;
-    final bColor = btnColor ?? kAccent;
-    final bg = iconBg ?? kAccent.withOpacity(0.12);
+    final color  = widget.iconColor ?? kAccent;
+    final bColor = widget.btnColor  ?? kAccent;
+    final bg     = widget.iconBg    ?? kAccent.withOpacity(0.12);
     final narrow = MediaQuery.of(context).size.width < 420;
 
     return Dialog(
@@ -1049,7 +1058,7 @@ class _MembreDialog extends StatelessWidget {
                         color: bg,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(icon, color: color, size: 20),
+                      child: Icon(widget.icon, color: color, size: 20),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -1057,7 +1066,7 @@ class _MembreDialog extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            title,
+                            widget.title,
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: 16,
@@ -1066,7 +1075,7 @@ class _MembreDialog extends StatelessWidget {
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            subtitle,
+                            widget.subtitle,
                             style: const TextStyle(
                               color: kTextSub,
                               fontSize: 12,
@@ -1080,7 +1089,9 @@ class _MembreDialog extends StatelessWidget {
                 ),
               ),
 
-              Padding(
+              Form(
+                key: _formKey,
+                child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
@@ -1089,16 +1100,27 @@ class _MembreDialog extends StatelessWidget {
                             children: [
                               _DialogField(
                                 icon: LucideIcons.user,
-                                label: 'NOM COMPLET',
+                                label: 'NOM COMPLET *',
                                 hint: 'Ahmed Ben Ali',
-                                controller: nomCtrl,
+                                controller: widget.nomCtrl,
+                                validator: (v) {
+                                  if (v == null || v.trim().isEmpty) return 'Nom obligatoire';
+                                  if (v.trim().length < 2) return 'Minimum 2 caractères';
+                                  if (v.trim().length > 100) return 'Maximum 100 caractères';
+                                  return null;
+                                },
                               ),
                               const SizedBox(height: 12),
                               _DialogField(
                                 icon: LucideIcons.briefcase,
-                                label: 'RÔLE',
+                                label: 'RÔLE *',
                                 hint: 'Architecte',
-                                controller: roleCtrl,
+                                controller: widget.roleCtrl,
+                                validator: (v) {
+                                  if (v == null || v.trim().isEmpty) return 'Rôle obligatoire';
+                                  if (v.trim().length < 2) return 'Minimum 2 caractères';
+                                  return null;
+                                },
                               ),
                             ],
                           )
@@ -1107,18 +1129,29 @@ class _MembreDialog extends StatelessWidget {
                               Expanded(
                                 child: _DialogField(
                                   icon: LucideIcons.user,
-                                  label: 'NOM COMPLET',
+                                  label: 'NOM COMPLET *',
                                   hint: 'Ahmed Ben Ali',
-                                  controller: nomCtrl,
+                                  controller: widget.nomCtrl,
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty) return 'Nom obligatoire';
+                                    if (v.trim().length < 2) return 'Minimum 2 caractères';
+                                    if (v.trim().length > 100) return 'Maximum 100 caractères';
+                                    return null;
+                                  },
                                 ),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: _DialogField(
                                   icon: LucideIcons.briefcase,
-                                  label: 'RÔLE',
+                                  label: 'RÔLE *',
                                   hint: 'Architecte',
-                                  controller: roleCtrl,
+                                  controller: widget.roleCtrl,
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty) return 'Rôle obligatoire';
+                                    if (v.trim().length < 2) return 'Minimum 2 caractères';
+                                    return null;
+                                  },
                                 ),
                               ),
                             ],
@@ -1128,23 +1161,37 @@ class _MembreDialog extends StatelessWidget {
                       icon: LucideIcons.settings,
                       label: 'SPÉCIALITÉ',
                       hint: 'Béton armé',
-                      controller: specialiteCtrl,
+                      controller: widget.specialiteCtrl,
                     ),
                     const SizedBox(height: 12),
                     _DialogField(
                       icon: LucideIcons.mail,
                       label: 'EMAIL',
                       hint: 'email@archi.ma',
-                      controller: emailCtrl,
+                      controller: widget.emailCtrl,
                       keyboardType: TextInputType.emailAddress,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) return null;
+                        final regex = RegExp(r'^[\w\.\-]+@[\w\-]+\.[a-z]{2,}$', caseSensitive: false);
+                        if (!regex.hasMatch(v.trim())) return 'Format email invalide (ex: email@archi.ma)';
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 12),
                     _DialogField(
                       icon: LucideIcons.phone,
                       label: 'TÉLÉPHONE',
-                      hint: '0661234567',
-                      controller: telCtrl,
-                      keyboardType: TextInputType.phone,
+                      hint: '20000000',
+                      controller: widget.telCtrl,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(8)],
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty) return null;
+                        if (v.length != 8) return 'Le numéro doit contenir exactement 8 chiffres';
+                        final num = int.tryParse(v);
+                        if (num == null || num < 20000000) return 'Numéro invalide ';
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 14),
 
@@ -1154,12 +1201,12 @@ class _MembreDialog extends StatelessWidget {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: disponible
+                        color: widget.disponible
                             ? const Color(0xFFF0FDF4)
                             : const Color(0xFFFFFBEB),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: disponible
+                          color: widget.disponible
                               ? const Color(0xFFBBF7D0)
                               : kAccent.withOpacity(0.4),
                         ),
@@ -1167,10 +1214,10 @@ class _MembreDialog extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(
-                            disponible
+                            widget.disponible
                                 ? LucideIcons.checkCircle
                                 : LucideIcons.briefcase,
-                            color: disponible
+                            color: widget.disponible
                                 ? const Color(0xFF16A34A)
                                 : kAccent,
                             size: 18,
@@ -1181,11 +1228,11 @@ class _MembreDialog extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Statut : ${disponible ? "Disponible" : "En activité"}',
+                                  'Statut : ${widget.disponible ? "Disponible" : "En activité"}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 13,
-                                    color: disponible
+                                    color: widget.disponible
                                         ? const Color(0xFF16A34A)
                                         : kAccent,
                                   ),
@@ -1202,8 +1249,8 @@ class _MembreDialog extends StatelessWidget {
                             ),
                           ),
                           Switch(
-                            value: disponible,
-                            onChanged: onDisponibleChanged,
+                            value: widget.disponible,
+                            onChanged: widget.onDisponibleChanged,
                             activeColor: const Color(0xFF16A34A),
                             inactiveThumbColor: kAccent,
                             inactiveTrackColor: kAccent.withOpacity(0.3),
@@ -1212,7 +1259,7 @@ class _MembreDialog extends StatelessWidget {
                       ),
                     ),
 
-                    if (!disponible && projets != null) ...[
+                    if (!widget.disponible && widget.projets != null) ...[
                       const SizedBox(height: 14),
                       const Text(
                         'PROJET ASSIGNÉ',
@@ -1233,7 +1280,7 @@ class _MembreDialog extends StatelessWidget {
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
-                            value: selectedProjetId,
+                            value: widget.selectedProjetId,
                             hint: const Text(
                               'Choisir un projet',
                               style: TextStyle(color: kTextSub, fontSize: 13),
@@ -1245,7 +1292,7 @@ class _MembreDialog extends StatelessWidget {
                               color: kAccent,
                             ),
                             dropdownColor: Colors.white,
-                            items: projets!
+                            items: widget.projets!
                                 .map<DropdownMenuItem<String>>(
                                   (p) => DropdownMenuItem(
                                     value: p['id'],
@@ -1277,11 +1324,11 @@ class _MembreDialog extends StatelessWidget {
                                   ),
                                 )
                                 .toList(),
-                            onChanged: onProjetChanged,
+                            onChanged: widget.onProjetChanged,
                           ),
                         ),
                       ),
-                      if (selectedProjetId != null) ...[
+                      if (widget.selectedProjetId != null) ...[
                         const SizedBox(height: 8),
                         Row(
                           children: [
@@ -1307,7 +1354,7 @@ class _MembreDialog extends StatelessWidget {
                     ],
                   ],
                 ),
-              ),
+              )), // end Form + Padding
 
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
@@ -1338,10 +1385,17 @@ class _MembreDialog extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: onSubmit,
-                        icon: Icon(btnIcon, size: 15, color: Colors.white),
+                        onPressed: _loading ? null : () async {
+                          if (!_formKey.currentState!.validate()) return;
+                          setState(() => _loading = true);
+                          await widget.onSubmit();
+                          if (mounted) setState(() => _loading = false);
+                        },
+                        icon: _loading
+                            ? const SizedBox(width: 15, height: 15, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                            : Icon(widget.btnIcon, size: 15, color: Colors.white),
                         label: Text(
-                          btnLabel,
+                          _loading ? 'En cours...' : widget.btnLabel,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -1349,7 +1403,7 @@ class _MembreDialog extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: bColor,
+                          backgroundColor: _loading ? bColor.withOpacity(0.6) : bColor,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 13),
                           shape: RoundedRectangleBorder(
@@ -1523,12 +1577,16 @@ class _DialogField extends StatelessWidget {
   final String label, hint;
   final TextEditingController controller;
   final TextInputType keyboardType;
+  final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatters;
   const _DialogField({
     required this.icon,
     required this.label,
     required this.hint,
     required this.controller,
     this.keyboardType = TextInputType.text,
+    this.validator,
+    this.inputFormatters,
   });
   @override
   Widget build(BuildContext context) => Column(
@@ -1544,33 +1602,26 @@ class _DialogField extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 6),
-      TextField(
+      TextFormField(
         controller: controller,
         keyboardType: keyboardType,
+        validator: validator,
+        inputFormatters: inputFormatters,
         style: const TextStyle(fontSize: 13, color: kTextMain),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(color: kTextSub),
           prefixIcon: Icon(icon, size: 14, color: kTextSub),
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 11,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
           filled: true,
           fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: kAccent, width: 2),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFFE5E7EB))),
+          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: Color(0xFFE5E7EB))),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: kAccent, width: 2)),
+          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: kRed)),
+          focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: const BorderSide(color: kRed, width: 2)),
+          errorStyle: const TextStyle(fontSize: 11, color: kRed),
         ),
       ),
     ],

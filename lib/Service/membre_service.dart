@@ -56,12 +56,12 @@ class MembreService {
     debugPrint("ASSIGNED: $projet to ${membre.nom}");
   }
 
-  // ── GET PAR PROJET ────────────────────────────────────────────────────────
-  static Future<List<Membre>> getMembresByProject(String projectId) async {
+  // ── GET PAR PROJET (via projets_assignes = tableau de titres) ────────────
+  static Future<List<Membre>> getMembresByProject(String projetTitre) async {
     final data = await supabase
-        .from('project_members')
-        .select('membres(*)')
-        .eq('project_id', projectId);
-    return (data as List).map((e) => Membre.fromJson(e['membres'])).toList();
+        .from('membres')
+        .select()
+        .contains('projets_assignes', [projetTitre]);
+    return (data as List).map((e) => Membre.fromJson(e)).toList();
   }
 }

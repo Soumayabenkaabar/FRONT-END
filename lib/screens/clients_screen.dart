@@ -1,5 +1,6 @@
 import 'package:archi_manager/service/client_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../constants/colors.dart';
 import '../models/client.dart';
@@ -158,20 +159,27 @@ class _ClientsScreenState extends State<ClientsScreen> {
                               if (isMobile) ...[
                                 _DialogField(
                                   icon: LucideIcons.user,
-                                  label: 'NOM COMPLET',
+                                  label: 'NOM COMPLET *',
                                   hint: 'Groupe OCP',
                                   controller: nomController,
-                                  validator: (v) =>
-                                      (v == null || v.trim().isEmpty)
-                                      ? 'Champ obligatoire'
-                                      : null,
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty) return 'Nom obligatoire';
+                                    if (v.trim().length < 2) return 'Minimum 2 caractères';
+                                    if (v.trim().length > 100) return 'Maximum 100 caractères';
+                                    return null;
+                                  },
                                 ),
                                 const SizedBox(height: 12),
                                 _DialogField(
                                   icon: LucideIcons.building2,
-                                  label: 'ENTREPRISE',
+                                  label: 'ENTREPRISE *',
                                   hint: 'OCP SA',
                                   controller: entrepriseController,
+                                  validator: (v) {
+                                    if (v == null || v.trim().isEmpty) return 'Entreprise obligatoire';
+                                    if (v.trim().length > 100) return 'Maximum 100 caractères';
+                                    return null;
+                                  },
                                 ),
                               ] else
                                 Row(
@@ -179,21 +187,29 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                     Expanded(
                                       child: _DialogField(
                                         icon: LucideIcons.user,
-                                        label: 'NOM COMPLET',
+                                        label: 'NOM COMPLET *',
                                         hint: 'Groupe OCP',
                                         controller: nomController,
-                                        validator: (v) => v!.isEmpty
-                                            ? 'Champ obligatoire'
-                                            : null,
+                                        validator: (v) {
+                                          if (v == null || v.trim().isEmpty) return 'Nom obligatoire';
+                                          if (v.trim().length < 2) return 'Minimum 2 caractères';
+                                          if (v.trim().length > 100) return 'Maximum 100 caractères';
+                                          return null;
+                                        },
                                       ),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: _DialogField(
                                         icon: LucideIcons.building2,
-                                        label: 'ENTREPRISE',
+                                        label: 'ENTREPRISE *',
                                         hint: 'OCP SA',
                                         controller: entrepriseController,
+                                        validator: (v) {
+                                          if (v == null || v.trim().isEmpty) return 'Entreprise obligatoire';
+                                          if (v.trim().length > 100) return 'Maximum 100 caractères';
+                                          return null;
+                                        },
                                       ),
                                     ),
                                   ],
@@ -202,26 +218,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
                               _DialogField(
                                 icon: LucideIcons.mail,
-                                label: 'EMAIL',
+                                label: 'EMAIL *',
                                 hint: 'contact@ocp.ma',
                                 controller: emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (v) {
-                                  validator:
-                                  (v) {
-                                    if (v == null || v.trim().isEmpty)
-                                      return null;
-
-                                    final regex = RegExp(
-                                      r'^[\w\.\-]+@[\w\-]+\.[a-z]{2,}$',
-                                      caseSensitive: false,
-                                    );
-
-                                    if (!regex.hasMatch(v.trim())) {
-                                      return 'Email invalide';
-                                    }
-                                    return null;
-                                  };
+                                  if (v == null || v.trim().isEmpty) return 'Email obligatoire';
+                                  final regex = RegExp(r'^[\w\.\-]+@[\w\-]+\.[a-z]{2,}$', caseSensitive: false);
+                                  if (!regex.hasMatch(v.trim())) return 'Format email invalide (ex: contact@ocp.ma)';
+                                  return null;
                                 },
                               ),
                               const SizedBox(height: 12),
@@ -229,22 +234,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
                               _DialogField(
                                 icon: LucideIcons.phone,
                                 label: 'TÉLÉPHONE',
-                                hint: '0522123456',
+                                hint: '20000000',
                                 controller: telController,
-                                keyboardType: TextInputType.phone,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(8)],
                                 validator: (v) {
-                                  if (v == null || v.trim().isEmpty)
-                                    return null;
-
-                                  final digits = v.replaceAll(
-                                    RegExp(r'\D'),
-                                    '',
-                                  );
-
-                                  if (digits.length != 8) {
-                                    return 'Le numéro doit contenir exactement 8 chiffres';
-                                  }
-
+                                  if (v == null || v.trim().isEmpty) return null;
+                                  if (v.length != 8) return 'Le numéro doit contenir exactement 8 chiffres';
+                                  final num = int.tryParse(v);
+                                  if (num == null || num < 20000000) return 'Numéro invalide (min : 20000000)';
                                   return null;
                                 },
                               ),
@@ -1123,6 +1121,7 @@ class _DialogField extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatters;
 
   const _DialogField({
     required this.icon,
@@ -1131,6 +1130,7 @@ class _DialogField extends StatelessWidget {
     required this.controller,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.inputFormatters,
   });
 
   @override
@@ -1152,6 +1152,7 @@ class _DialogField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           validator: validator,
+          inputFormatters: inputFormatters,
           style: const TextStyle(fontSize: 13, color: kTextMain),
           decoration: InputDecoration(
             hintText: hint,

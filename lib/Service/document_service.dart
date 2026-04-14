@@ -23,7 +23,7 @@ class DocumentService {
         .from('documents')
         .select()
         .eq('projet_id', projetId)
-        .order('created_at', ascending: true);
+        .order('uploaded_at', ascending: true);
 
     return (response as List).map((json) => Document.fromJson(json)).toList();
   }

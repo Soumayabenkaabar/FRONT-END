@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _anim = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 50),
     );
     _scale = Tween<double>(
       begin: 0.8,
@@ -32,8 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _checkSession() async {
-    await Future.delayed(const Duration(milliseconds: 1500));
-    if (!mounted) return;
+    await Future.delayed(const Duration(milliseconds: 500));
     final hasSession = await AuthService.restoreSession();
     if (!mounted) return;
     if (hasSession) {
